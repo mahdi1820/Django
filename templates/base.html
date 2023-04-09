@@ -1,0 +1,14 @@
+{% load static %} 
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+<script src="{% static 'fontawesomefree/js/fontawesome.js' %}"></script>
+<script src="{% static 'fontawesomefree/js/solid.js' %}"></script>
+<script src="{% static 'fontawesomefree/js/brands.js' %}"></script>
+<link href="{% static 'fontawesomefree/css/fontawesome.css' %}" rel="stylesheet" type="text/css">
+<link href="{% static 'fontawesomefree/css/brands.css' %}" rel="stylesheet" type="text/css">
+<link href="{% static 'fontawesomefree/css/solid.css' %}" rel="stylesheet" type="text/css">
+{% include 'parts/navbar.html' %} 
+{% block content%}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <script src="{% static 'fontawesomefree/js/all.min.js' %}"></script>
+    <link href="{% static 'fontawesomefree/css/all.min.css' %}" rel="stylesheet" type="text/css">
+{% endblock content%}

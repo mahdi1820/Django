@@ -1,0 +1,111 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;1,300;1,400;1,500&display=swap');
+
+:root{
+  --pink:#080705;
+  --violet:#49D49D;
+}
+
+*{
+  font-family: 'Roboto', sans-serif;
+  text-transform: capitalize;
+  text-decoration: none;
+  outline: none;
+  margin: 0; padding: 0;
+  box-sizing: border-box;
+}
+
+*::selection{
+  background:var(--pink);
+  color:#fff;
+}
+
+html{
+  font-size: 62.5%;
+  overflow-x: hidden;
+}
+
+.heading{
+  font-size: 4rem;
+  color:var(--pink);
+  text-align: center;
+  padding:0 1rem;
+  padding-top: 6rem;
+  letter-spacing: .2rem;
+  font-weight: 500;
+}
+
+.title{
+  padding:0 1rem;
+  font-size: 2rem;
+  text-align: center;
+  font-weight: 400;
+  color:#aaa;
+}
+
+header{
+  width:96%;
+  background:#fff;
+  position: fixed;
+  top:2rem; left:50%;
+  transform: translateX(-50%);
+  border-radius: 5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding:1rem 2rem;
+  z-index: 1000;
+  transition: .2s;
+}
+
+.header-active{
+  top:0;
+  width: 100%;
+  border-radius: 0;
+  box-shadow: 0 .1rem .3rem rgba(0,0,0,.3);
+}
+
+header .navbar ul{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  list-style: none;
+}
+
+header .navbar ul li{
+  margin:0 1rem;
+}
+
+header .navbar ul li a{
+  font-size: 2rem;
+  color:var(--pink);
+  transition: .2s;
+}
+
+header .navbar ul li .active,
+header .navbar ul li a:hover{
+  color:var(--violet);
+}
+
+header .logo{
+  font-size: 2.5rem;
+  color: var(--violet);
+  text-transform: uppercase;
+}
+
+header .logo i{
+  color:#080705;
+  padding:0 .2rem;
+}
+
+header .fa-bars{
+  font-size: 3rem;
+  color:var(--pink);
+  cursor: pointer;
+  display: none;
+  transition: .2s;
+}
+
+
+
+
+

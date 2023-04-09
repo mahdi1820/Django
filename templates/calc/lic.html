@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% include 'parts/navbar.html' %} 
+{% load static %} 
+{% block content %}
+<head>
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+</head>
+<body>
+    <section class="home" id="home">
+        <script src="{% static 'fontawesomefree/js/all.min.js' %}"></script>
+        <link href="{% static 'fontawesomefree/css/all.min.css' %}" rel="stylesheet" type="text/css">
+    <div class="content">
+        <span style="padding-top: 50px ;"></span>
+        <h1>WELCOME</h1>
+        <p>Welcome from the managemment school page</p>
+        <span style="padding-top: 50px ;"></span>
+    </div>
+        
+    <div class="box-container">
+        
+        <div class="box">
+            
+            <h3>1ere année(L1)</h3>
+            
+        </div>
+    
+        <div class="box">
+            
+            <h3>2eme année (L2)</h3>
+            
+        </div>
+        
+        <div class="box">
+           
+            <h3>3eme année (L3)</h3>
+            
+        </div>
+        
+    </div>
+        
+    </section>
+    
+    <script src="{% static 'js/main.js'%}"></script>
+</body>
+
+
+
+{% endblock content %}
