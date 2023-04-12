@@ -93,7 +93,7 @@ header .logo{
 }
 
 header .logo i{
-  color:#080705;
+  color: var(--pink);
   padding:0 .2rem;
 }
 

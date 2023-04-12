@@ -274,13 +274,6 @@ button {
   zoom: 1;
 }
 
-/* 1. END BODY */
-/***********************************/
-
-/***********************************
-			/* 2. CONTENT */
-/***********************************/
-/* 2.1. Section error */
 .error {
   min-height: 100vh;
   position: relative;
@@ -552,13 +545,3 @@ button {
   z-index: 1;
   border-radius: 90px 90px 0px 0px;
 }
-/* 2.3. END Lamp */
-/***********************************
-			/* 2. END CONTENT */
-/***********************************/
-
-/*
-DevNote
-Tiktok: tiktok.com/@devnote
-Telegram: t.me/devnotepublic
-*/

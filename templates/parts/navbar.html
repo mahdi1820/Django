@@ -1,4 +1,5 @@
 {% load static %} 
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,21 +12,20 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
 </head>
-<body>
-    <header>
-        <script src="{% static 'fontawesomefree/js/all.min.js' %}"></script>
-        <link href="{% static 'fontawesomefree/css/all.min.css' %}" rel="stylesheet" type="text/css">
-        <a href="#" class="logo"><i class="fas fa-graduation-cap"></i> UNIVERSITY KASDI MARBAH</a>
-        
-        <nav class="navbar">
-            <ul>
-                <li><a href="{ % url 'home' % }" class="active"><i class="fa-solid fa-house"></i>home</a></li>
-                <li><a href="#Sign up"><i class="fa-solid fa-user-plus"></i> Sign Up</a></li>
-                <li><a href="#Login"><i class="fa-solid fa-right-to-bracket"></i> Login</a></li>
-            </ul>
-        </nav>
-        
-        
-        
-    </header>
-</body>    
+
+<header>
+    <script src="{% static 'fontawesomefree/js/all.min.js' %}"></script>
+    <link href="{% static 'fontawesomefree/css/all.min.css' %}" rel="stylesheet" type="text/css">
+    <a href="#" class="logo"><i class="fas fa-graduation-cap"></i> UNIVERSITY KASDI MARBAH</a>
+    
+    <nav class="navbar">
+        <ul>
+            <li><a href="#home" class="active"><i class="fa-solid fa-house"></i>home</a></li>
+            <li><a href="#SignUp"><i class="fa-solid fa-user-plus"></i> Sign Up</a></li>
+            <li><a href="#Login"><i class="fa-solid fa-right-to-bracket"></i> Login</a></li>
+        </ul>
+    </nav>
+    
+    
+    
+</header>
