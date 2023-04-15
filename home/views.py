@@ -41,7 +41,7 @@ def signup(request):
             return redirect('login')
 
     return render (request,'home/signup.html')
-
+@login_required(login_url = 'login')
 def Logout(request):
     logout(request)
     return redirect('login')  
