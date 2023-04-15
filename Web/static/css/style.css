@@ -80,6 +80,19 @@ header .navbar ul li a{
   color:var(--pink);
   transition: .2s;
 }
+header .navbar ul .font-weight-bolder{
+  font-size: 2rem;
+  color:var(--pink);
+  transition: .2s;
+
+}
+header .navbar ul .font-weight-bolder span{
+  font-size: 2rem;
+  color:var(--violet);
+  transition: .2s;
+}
+
+
 
 header .navbar ul li .active,
 header .navbar ul li a:hover{

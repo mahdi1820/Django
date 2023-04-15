@@ -1,8 +1,11 @@
-from django.urls import path
+from django.urls import path 
 
 from . import views
 
+
+
 urlpatterns = [
-    path('master/', views.master,name="master"),
+    path('', views.master,name="master"),
+    
     
 ]

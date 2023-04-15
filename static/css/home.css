@@ -1,6 +1,6 @@
 .home{
     min-height: 100vh;
-    background:linear-gradient(rgb(73, 212, 157),rgb(73, 212, 157)), url(../images/bg.jpg) no-repeat;
+    background:linear-gradient(rgb(73, 212, 157),rgb(73, 212, 157));
     background-size: cover;
     background-position: center;
     background-attachment: fixed;

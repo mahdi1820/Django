@@ -15,10 +15,16 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path , include
+from home import views
+from Licence import views
+from master import views
+
+
 
 urlpatterns = [
-    path('', include('calc.urls')),
+    path('', include('home.urls')),
     path('admin/', admin.site.urls),
-    path('',include('Licence.urls')),
-    path('',include('master.urls')),
+    path('Licence/',include('Licence.urls')),
+    path('master/',include('master.urls')),
+    
 ]
