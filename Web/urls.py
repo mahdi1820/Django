@@ -24,6 +24,7 @@ from master import views
 urlpatterns = [
     path('', include('home.urls')),
     path('admin/', admin.site.urls),
+    
     path('Licence/',include('Licence.urls')),
     path('master/',include('master.urls')),
     
