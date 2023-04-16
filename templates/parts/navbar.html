@@ -17,6 +17,7 @@
     
     <nav class="navbar">
         <ul>
+            <li class="{% if current_path == '/timetable:Licence/' %}active{% endif %}"><a href="{%url 'home'%}" class="active">  home <i class="fa-solid fa-house"></i></a></li>
             <div class="font-weight-bolder" >Welcome <span class='text-success'> {{user.username}} </span></div>
             <li><a href="{%url 'login'%}"> Log out <i class="fa-solid fa-arrow-right-from-bracket"></i></a></li>
         </ul>
