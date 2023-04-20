@@ -1,7 +1,8 @@
-{% load static %} 
 
+{% load static %} 
 {% block content %}
 <head>
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SITE WEB</title>
@@ -10,18 +11,5 @@
 
 </head>
 
-<header>
-    <script src="{% static 'fontawesomefree/js/all.min.js' %}"></script>
-    <link href="{% static 'fontawesomefree/css/all.min.css' %}" rel="stylesheet" type="text/css">
-    <a href="#" class="logo"><i class="fas fa-graduation-cap"></i> UNIVERSITY KASDI MARBAH</a>
-    
-    <nav class="navbar">
-        <ul>
-            <li class="{% if current_path == '/timetable:Licence/' %}active{% endif %}"><a href="{%url 'home'%}" class="active">  home <i class="fa-solid fa-house"></i></a></li>
-            <div class="font-weight-bolder" >Welcome <span class='text-success'> {{user.username}} </span></div>
-            <li><a href="{%url 'login'%}"> Log out <i class="fa-solid fa-arrow-right-from-bracket"></i></a></li>
-        </ul>
-    </nav>
 
-</header>
 {% endblock content %}

@@ -35,7 +35,7 @@ INSTALLED_APPS = [
     
     'Licence.apps.LicenceConfig',
     'master.apps.MasterConfig',
-    'home.apps.SuitConfig',
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
