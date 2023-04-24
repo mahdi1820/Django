@@ -6,5 +6,3 @@ class HomeConfig(AppConfig):
     name = 'home'
 
 
-class SuitConfig(DjangoSuitConfig):
-    layout = 'vertical'

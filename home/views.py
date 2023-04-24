@@ -23,7 +23,9 @@ def login(request):
         else:
             messages.error(request,'Invalid username or password . Please try again.')
 
-    return render (request,'home/login.html')
+    return render (request,'home/Alogin.html')
+
+key1 = "FNTICADMIN"
 
 def signup(request):
     if request.method == 'POST':
@@ -31,10 +33,12 @@ def signup(request):
         email = request.POST.get('email')
         password1 = request.POST.get('password1')
         password2 = request.POST.get('password2')
-        
-        if password1 != password2:
+        key = request.POST.get('key')
+
+        if password1 != password2 or len(password1) == 0  or len(password2) == 0 :
             messages.error(request,'You password and conform password are not Same !!!')
-        
+        elif key != key1:
+            messages.error(request,'Invalid Key')
         else:
             my_user = User.objects.create_user(username,email,password1)
             my_user.save()
@@ -42,7 +46,7 @@ def signup(request):
             my_admin_group[0].user_set.add(my_user)
             return redirect('login')
 
-    return render (request,'home/signup.html')
+    return render (request,'home/ASignup.html')
 
 @login_required(login_url = 'index')
 def Logout(request):
@@ -89,3 +93,16 @@ def Teacher_signup(request):
 
 def Teacher_wait(request):
     return render (request,'home/Teacher_wait.html')
+
+@login_required(login_url = 'login')
+def Licence(request):
+    return render (request,'home/Licence.html')
+@login_required(login_url = 'login')
+def First_level(request):
+    return render (request,'home/First_Level.html')
+@login_required(login_url = 'login')
+def groups(request):
+    return render (request,'home/create.html')
+@login_required(login_url = 'login')
+def master(request):
+    return render (request,'home/master.html')
