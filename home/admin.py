@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Attendance,StudentExtra,TeacherExtra,Notice
+from .models import Attendance,StudentExtra,TeacherExtra,Notice,Group
 # Register your models here.
 
 admin.site.site_header = 'FNTIC-UKMO-ADMIN'
@@ -19,6 +19,8 @@ admin.site.register(TeacherExtra, TeacherExtraAdmin)
 class AttendanceAdmin(admin.ModelAdmin):
     pass
 admin.site.register(Attendance, AttendanceAdmin)
+
+admin.site.register(Group)
 
 class NoticeAdmin(admin.ModelAdmin):
     pass

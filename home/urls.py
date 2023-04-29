@@ -9,9 +9,7 @@ urlpatterns = [
     path('home/', views.home, name='home'),
     path('', views.login, name='login'),
     path('Admin_SignUp/', views.signup, name='signup'),
-    path('Teacher_Login', views.Teacher_login, name='TLogin'),
-    path('Teacher_wait', views.Teacher_wait, name='Twait'),
-    path('Teacher_SignUp/', views.Teacher_signup, name='TSignup'),
+    
     path('admin/logout/', views.Logout, name='admin_logout'),
     path('master/', views.master,name="master"),
 
@@ -45,6 +43,9 @@ urlpatterns = [
     path('admin-take-attendance/<str:cl>', views.admin_take_attendance_view,name='admin-take-attendance'),
     path('admin-view-attendance/<str:cl>', views.admin_view_attendance_view,name='admin-view-attendance'),
 
+    path('admin-group', views.admin_group,name='admin-group'),
+    path('admin-add-group', views.admin_add_group_view,name='admin-add-group'),
+    path('admin-view-group', views.admin_view_group_view,name='admin-view-group'),
 
     #path('admin-fee', views.admin_fee_view,name='admin-fee'),
     #path('admin-view-fee/<str:cl>', views.admin_view_fee_view,name='admin-view-fee'),

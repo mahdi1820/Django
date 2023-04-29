@@ -17,18 +17,17 @@ class TeacherExtra(models.Model):
     @property
     def get_name(self):
         return self.user.first_name+" "+self.user.last_name
+    
 
 
 
-
-classes=[('one','one'),('two','two'),('three','three'),
-('four','four'),('five','five'),('six','six'),('seven','seven'),('eight','eight'),('nine','nine'),('ten','ten')]
+level=[('L1','L1'),('L2','L2'),('L3','L3')]
 class StudentExtra(models.Model):
     user=models.OneToOneField(User,on_delete=models.CASCADE)
     roll = models.CharField(max_length=10)
     mobile = models.CharField(max_length=40,null=True)
     fee=models.PositiveIntegerField(null=True)
-    cl= models.CharField(max_length=10,choices=classes,default='one')
+    cl= models.CharField(max_length=10,choices=level,default='one')
     status=models.BooleanField(default=False)
     @property
     def get_name(self):
@@ -53,3 +52,20 @@ class Notice(models.Model):
     date=models.DateField(auto_now=True)
     by=models.CharField(max_length=20,null=True,default='school')
     message=models.CharField(max_length=500)
+
+
+class Group(models.Model):
+    name = models.CharField(max_length=60)
+    ability = models.PositiveIntegerField(null=True)
+    level = models.CharField(max_length=10,choices=level,default='L1')
+
+    
+codeM = [('C','C'),('TD','TD'),('TP','TP')]
+
+class material (models.Model):
+    name = models.CharField(max_length=50)
+    codeM = models.CharField(max_length=10,choices=codeM,default='C')   
+    
+class room(models.Model):
+    name = models.CharField(max_length=40)
+    ability = models.PositiveIntegerField(null=True)

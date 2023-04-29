@@ -25,7 +25,7 @@ class StudentExtraForm(forms.ModelForm):
 class TeacherUserForm(forms.ModelForm):
     class Meta:
         model=User
-        fields=['first_name','last_name','username','password']
+        fields=['first_name','last_name','username','password','email']
 class TeacherExtraForm(forms.ModelForm):
     class Meta:
         model=models.TeacherExtra
@@ -43,6 +43,12 @@ class AttendanceForm(forms.Form):
 class AskDateForm(forms.Form):
     date=forms.DateField()
 
+
+
+class Groups(forms.ModelForm):
+    class Meta:
+        model=models.Group
+        fields=['name','ability','level']
 
 
 

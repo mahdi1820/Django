@@ -151,7 +151,7 @@ button{
         <div class="shape"></div>
     </div>
     <form method="post">
-        <h3>Administrators Login Here</h3>
+        <h3>Login Here</h3>
         {% csrf_token %} 
         <label for="username">Username</label>
         <input type="text" placeholder="Enter Username" id="username" name="username">
@@ -168,7 +168,7 @@ button{
                 {% endfor %}
             </ul>
         {% endif %}
-        <a href="{% url 'signup' %}" >Create a account</a>
+        
     </form>
 </body>
 </html>
