@@ -14,6 +14,10 @@
     a:link {
       text-decoration: none;
     }
+    
+    h6 {
+      color: white;
+    }
 
     .order-card {
       color: #fff;
@@ -49,6 +53,8 @@
     .card .card-block {
       padding: 25px;
     }
+
+    
 
     .order-card i {
       font-size: 26px;
@@ -98,7 +104,40 @@
         </div>
       </div>
 
-      
+      <div class="col-md-4 col-xl-3">
+        <div class="card bg-c-yellow order-card">
+          <div class="card-block">
+            <h6 class="m-b-20">Total Groups</h6>
+            <h2 class="text-right"><i class="fas fa-users f-left"></i><span>{{groupcount}}</span></h2>
+            <!-- <p class="m-b-0">Pending Salary<span class="f-right">{{pendingteachersalary}}</span></p> -->
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-xl-3">
+        <div class="card bg-c-blue order-card">
+          <div class="card-block">
+            <a href="admin-add-teacher">
+            <h6 class="m-b-20">Total Admin</h6>
+            </a>
+            <h2 class="text-right"><i class="fas fa-user f-left"></i><span>{{admincount}}</span></h2>
+            <!-- <p class="m-b-0">Pending Salary<span class="f-right">{{pendingteachersalary}}</span></p> -->
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-xl-3">
+        <div class="card bg-c-blue order-card">
+          <div class="card-block">
+            <a href="admin-add-admin">
+              <h6 class="m-b-20">Add Admin</h6>
+            </a>
+            <h2 class="text-right"><i class="fas fa-user f-left"></i><span></span></h2>
+            <br>
+            <br>
+          </div>
+        </div>
+      </div>
 
     </div>
   </div>

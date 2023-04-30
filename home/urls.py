@@ -11,11 +11,12 @@ urlpatterns = [
     path('Admin_SignUp/', views.signup, name='signup'),
     
     path('admin/logout/', views.Logout, name='admin_logout'),
-    path('master/', views.master,name="master"),
+    path('Master/', views.master,name="Master"),
+    path('Doctorat/', views.master,name="Doctorat"),
 
 
 
-
+    path('admin-add-admin', views.admin_signup_view,name='admin-add-admin'),
     path('admin-dashboard', views.admin_dashboard_view,name='admin-dashboard'),   
     path('admin-teacher', views.admin_teacher_view,name='admin-teacher'),
     path('admin-add-teacher', views.admin_add_teacher_view,name='admin-add-teacher'),

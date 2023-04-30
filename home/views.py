@@ -101,8 +101,8 @@ def admin_signup_view(request):
             my_admin_group = Group.objects.get_or_create(name='ADMIN')
             my_admin_group[0].user_set.add(user)
 
-            return HttpResponseRedirect('adminlogin')
-    return render(request,'school/adminsignup.html',{'form':form})
+            return HttpResponseRedirect('admin_add_admin')
+    return render(request,'school/admin_add_admin.html',{'form':form})
 
 
 
@@ -165,7 +165,7 @@ def afterlogin_view(request):
 #for dashboard of adminnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn
 
 
-
+user_passes_test(is_admin)
 def admin_dashboard_view(request):
     teachercount=models.TeacherExtra.objects.all().filter(status=True).count()
     pendingteachercount=models.TeacherExtra.objects.all().filter(status=False).count()
@@ -174,6 +174,9 @@ def admin_dashboard_view(request):
     pendingstudentcount=models.StudentExtra.objects.all().filter(status=False).count()
 
     groupcount = models.Group.objects.all().count()
+
+    admin_group = Group.objects.get(name='ADMIN')
+    admincount = admin_group.user_set.count()
 
     teachersalary=models.TeacherExtra.objects.filter(status=True).aggregate(Sum('salary'))
     pendingteachersalary=models.TeacherExtra.objects.filter(status=False).aggregate(Sum('salary'))
@@ -192,6 +195,9 @@ def admin_dashboard_view(request):
         'pendingstudentcount':pendingstudentcount,
 
         'groupcount':groupcount,
+
+        'admincount':admincount,
+
 
         'teachersalary':teachersalary['salary__sum'],
         'pendingteachersalary':pendingteachersalary['salary__sum'],
