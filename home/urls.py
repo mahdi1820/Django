@@ -18,6 +18,9 @@ urlpatterns = [
 
     path('admin-add-admin', views.admin_signup_view,name='admin-add-admin'),
     path('admin-dashboard', views.admin_dashboard_view,name='admin-dashboard'),   
+    path('admin-admin', views.admin_admin_view,name='admin-admin'),
+    path('admin-view-admin', views.admin_view_admin_view,name='admin-view-admin'),
+
     path('admin-teacher', views.admin_teacher_view,name='admin-teacher'),
     path('admin-add-teacher', views.admin_add_teacher_view,name='admin-add-teacher'),
     path('admin-view-teacher', views.admin_view_teacher_view,name='admin-view-teacher'),

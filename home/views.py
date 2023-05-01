@@ -82,27 +82,35 @@ def admin_teacher_view(request):
 
 #------------------------------------------------------------------
 
-
+def admin_admin_view(request):
+    return render(request,'school/admin-admin.html')
 
 
 
 
 
 def admin_signup_view(request):
-    form=forms.AdminSigupForm()
+    form=forms.AdminSignupForm()
+    form2=forms.AdminExtraForm()
+    mydict={'form':form,'form2':form2}
     if request.method=='POST':
-        form=forms.AdminSigupForm(request.POST)
-        if form.is_valid():
+        form=forms.AdminSignupForm(request.POST)
+        form2=forms.AdminExtraForm(request.POST)
+        if form.is_valid() and form2.is_valid():
             user=form.save()
             user.set_password(user.password)
             user.save()
 
-
+            f2=form2.save(commit=False)
+            f2.user=user
+            f2.status=True
+            f2.save()
+            
             my_admin_group = Group.objects.get_or_create(name='ADMIN')
             my_admin_group[0].user_set.add(user)
 
-            return HttpResponseRedirect('admin_add_admin')
-    return render(request,'school/admin_add_admin.html',{'form':form})
+            return HttpResponseRedirect('admin-add-admin')
+    return render(request,'school/admin_add_admin.html',context=mydict)
 
 
 
@@ -175,8 +183,9 @@ def admin_dashboard_view(request):
 
     groupcount = models.Group.objects.all().count()
 
-    admin_group = Group.objects.get(name='ADMIN')
-    admincount = admin_group.user_set.count()
+    #admin_group = Group.objects.get(name='ADMIN')
+    #admincount = admin_group.user_set.count()
+    admincount = models.AdminExtra.objects.all().filter(status=True).count()
 
     teachersalary=models.TeacherExtra.objects.filter(status=True).aggregate(Sum('salary'))
     pendingteachersalary=models.TeacherExtra.objects.filter(status=False).aggregate(Sum('salary'))
@@ -245,7 +254,9 @@ def admin_add_teacher_view(request):
         return HttpResponseRedirect('admin-teacher')
     return render(request,'school/admin_add_teacher.html',context=mydict)
 
-
+def admin_view_admin_view(request):
+    admins=models.AdminExtra.objects.all()
+    return render(request,'school/admin_view_admin.html',{'admins':admins})
 
 def admin_view_teacher_view(request):
     teachers=models.TeacherExtra.objects.all()

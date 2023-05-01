@@ -3,10 +3,14 @@ from django.contrib.auth.models import User
 from . import models
 
 #for admin
-class AdminSigupForm(forms.ModelForm):
+class AdminSignupForm(forms.ModelForm):
     class Meta:
         model=User
         fields=['first_name','last_name','username','password','email']
+class AdminExtraForm(forms.ModelForm):
+    class Meta:
+        model=models.AdminExtra
+        fields=['mobile','status']
 
 
 #for student related form
