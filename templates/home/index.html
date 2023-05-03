@@ -248,7 +248,7 @@
     <nav class="navbar">
         <ul>
             <li class="{% if current_path == 'home/' %}active{% endif %}"><a href="{%url 'home'%}" class="active">  home <i class="fa-solid fa-house"></i></a></li>
-            <div class="font-weight-bolder" >Welcome <span class='text-success'> {{user.username}} </span></div>
+            <div class="font-weight-bolder" >Welcome <span class='text-success'> {{user.first_name}} </span></div>
             <li><a href="{%url 'admin_logout'%}" onclick="logout();">Logout <i class="fa-solid fa-arrow-right-from-bracket"></i></a></i>
     </nav>
       
@@ -267,7 +267,7 @@
             
             <div class="box">
                 <i class="fa-solid fa-award"></i>
-                <h3><a href=" /admin-dashboard">Licence</a></h3>
+                <h3><a href=" /afterlogin">Licence</a></h3>
                 
             </div>
         

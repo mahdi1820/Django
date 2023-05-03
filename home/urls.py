@@ -14,7 +14,7 @@ urlpatterns = [
     path('Master/', views.master,name="Master"),
     path('Doctorat/', views.master,name="Doctorat"),
 
-
+    path('afterlogin', views.afterlogin_view,name='afterlogin'),
 
     path('admin-add-admin', views.admin_signup_view,name='admin-add-admin'),
     path('admin-dashboard', views.admin_dashboard_view,name='admin-dashboard'),   
@@ -24,8 +24,8 @@ urlpatterns = [
     path('admin-teacher', views.admin_teacher_view,name='admin-teacher'),
     path('admin-add-teacher', views.admin_add_teacher_view,name='admin-add-teacher'),
     path('admin-view-teacher', views.admin_view_teacher_view,name='admin-view-teacher'),
-    path('admin-approve-teacher', views.admin_approve_teacher_view,name='admin-approve-teacher'),
-    path('approve-teacher/<int:pk>', views.approve_teacher_view,name='approve-teacher'),
+    #path('admin-approve-teacher', views.admin_approve_teacher_view,name='admin-approve-teacher'),
+    #path('approve-teacher/<int:pk>', views.approve_teacher_view,name='approve-teacher'),
     path('delete-teacher/<int:pk>', views.delete_teacher_view,name='delete-teacher'),
     path('delete-teacher-from-school/<int:pk>', views.delete_teacher_from_school_view,name='delete-teacher-from-school'),
     path('update-teacher/<int:pk>', views.update_teacher_view,name='update-teacher'),
@@ -38,9 +38,9 @@ urlpatterns = [
     path('delete-student-from-school/<int:pk>', views.delete_student_from_school_view,name='delete-student-from-school'),
     path('delete-student/<int:pk>', views.delete_student_view,name='delete-student'),
     path('update-student/<int:pk>', views.update_student_view,name='update-student'),
-    path('admin-approve-student', views.admin_approve_student_view,name='admin-approve-student'),
-    path('approve-student/<int:pk>', views.approve_student_view,name='approve-student'),
-    path('admin-view-student-fee', views.admin_view_student_fee_view,name='admin-view-student-fee'),
+    #path('admin-approve-student', views.admin_approve_student_view,name='admin-approve-student'),
+    #path('approve-student/<int:pk>', views.approve_student_view,name='approve-student'),
+    #path('admin-view-student-fee', views.admin_view_student_fee_view,name='admin-view-student-fee'),
 
 
     path('admin-attendance', views.admin_attendance_view,name='admin-attendance'),

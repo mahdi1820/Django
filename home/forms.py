@@ -21,7 +21,7 @@ class StudentUserForm(forms.ModelForm):
 class StudentExtraForm(forms.ModelForm):
     class Meta:
         model=models.StudentExtra
-        fields=['roll','cl','mobile','fee','status']
+        fields=['mobile','cl','lv','status']
 
 
 

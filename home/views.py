@@ -158,7 +158,6 @@ def teacher_signup_view(request):
         return HttpResponseRedirect('teacherlogin')
     return render(request,'school/teachersignup.html',context=mydict)
 
-
 def afterlogin_view(request):
     if is_admin(request.user):
         return redirect('admin-dashboard')
@@ -168,12 +167,10 @@ def afterlogin_view(request):
         return redirect('student-dashboard')
 
 
-
-
 #for dashboard of adminnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn
 
 
-user_passes_test(is_admin)
+@user_passes_test(is_admin)
 def admin_dashboard_view(request):
     teachercount=models.TeacherExtra.objects.all().filter(status=True).count()
     pendingteachercount=models.TeacherExtra.objects.all().filter(status=False).count()
@@ -190,9 +187,7 @@ def admin_dashboard_view(request):
     teachersalary=models.TeacherExtra.objects.filter(status=True).aggregate(Sum('salary'))
     pendingteachersalary=models.TeacherExtra.objects.filter(status=False).aggregate(Sum('salary'))
 
-    studentfee=models.StudentExtra.objects.filter(status=True).aggregate(Sum('fee',default=0))
-    pendingstudentfee=models.StudentExtra.objects.filter(status=False).aggregate(Sum('fee'))
-
+  
     notice=models.Notice.objects.all()
 
     #aggregate function return dictionary so fetch data from dictionay
@@ -211,8 +206,6 @@ def admin_dashboard_view(request):
         'teachersalary':teachersalary['salary__sum'],
         'pendingteachersalary':pendingteachersalary['salary__sum'],
 
-        'studentfee':studentfee['fee__sum'],
-        'pendingstudentfee':pendingstudentfee['fee__sum'],
 
         'notice':notice
 
@@ -229,8 +222,8 @@ def admin_dashboard_view(request):
 #for teacher sectionnnnnnnn by adminnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn
 
 
-
-
+@login_required(login_url="login")
+@user_passes_test(is_admin)
 def admin_add_teacher_view(request):
     form1=forms.TeacherUserForm()
     form2=forms.TeacherExtraForm()
@@ -254,27 +247,19 @@ def admin_add_teacher_view(request):
         return HttpResponseRedirect('admin-teacher')
     return render(request,'school/admin_add_teacher.html',context=mydict)
 
+
+@login_required(login_url="login")
+@user_passes_test(is_admin)
 def admin_view_admin_view(request):
     admins=models.AdminExtra.objects.all()
     return render(request,'school/admin_view_admin.html',{'admins':admins})
 
+
+@login_required(login_url="login")
+@user_passes_test(is_admin)
 def admin_view_teacher_view(request):
     teachers=models.TeacherExtra.objects.all()
     return render(request,'school/admin_view_teacher.html',{'teachers':teachers})
-
-
-
-def admin_approve_teacher_view(request):
-    teachers=models.TeacherExtra.objects.all().filter(status=False)
-    return render(request,'school/admin_approve_teacher.html',{'teachers':teachers})
-
-
-
-def approve_teacher_view(request,pk):
-    teacher=models.TeacherExtra.objects.get(id=pk)
-    teacher.status=True
-    teacher.save()
-    return redirect(reverse('admin-approve-teacher'))
 
 
 
@@ -323,11 +308,14 @@ def update_teacher_view(request,pk):
 #for student by adminnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn
 
 
+@login_required(login_url="login")
+@user_passes_test(is_admin)
 def admin_student_view(request):
     return render(request,'school/admin_student.html')
 
 
-
+@login_required(login_url="login")
+@user_passes_test(is_admin)
 def admin_add_student_view(request):
     form1=forms.StudentUserForm()
     form2=forms.StudentExtraForm()
@@ -354,13 +342,15 @@ def admin_add_student_view(request):
     return render(request,'school/admin_add_student.html',context=mydict)
 
 
-
+@login_required(login_url="login")
+@user_passes_test(is_admin)
 def admin_view_student_view(request):
     students=models.StudentExtra.objects.all().filter(status=True)
     return render(request,'school/admin_view_student.html',{'students':students})
 
 
-
+@login_required(login_url="login")
+@user_passes_test(is_admin)
 def delete_student_from_school_view(request,pk):
     student=models.StudentExtra.objects.get(id=pk)
     user=models.User.objects.get(id=student.user_id)
@@ -369,7 +359,8 @@ def delete_student_from_school_view(request,pk):
     return redirect('admin-view-student')
 
 
-
+@login_required(login_url="login")
+@user_passes_test(is_admin)
 def delete_student_view(request,pk):
     student=models.StudentExtra.objects.get(id=pk)
     user=models.User.objects.get(id=student.user_id)
@@ -402,37 +393,16 @@ def update_student_view(request,pk):
 
 
 
-def admin_approve_student_view(request):
-    students=models.StudentExtra.objects.all().filter(status=False)
-    return render(request,'school/admin_approve_student.html',{'students':students})
-
-
-
-def approve_student_view(request,pk):
-    students=models.StudentExtra.objects.get(id=pk)
-    students.status=True
-    students.save()
-    return redirect(reverse('admin-approve-student'))
-
-
-def admin_view_student_fee_view(request):
-    students=models.StudentExtra.objects.all()
-    return render(request,'school/admin_view_student_fee.html',{'students':students})
-
-
-
-
-
-
 #attendance related viewwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 
 def admin_attendance_view(request):
-    return render(request,'school/admin_attendance.html')
+    groups=models.Group.objects.all()
+    return render(request,'school/admin_attendance.html',{'groups':groups})
 
 
 
 def admin_take_attendance_view(request,cl):
-    students=models.StudentExtra.objects.all().filter(cl=cl)
+    students=models.StudentExtra.objects.all()
     print(students)
     aform=forms.AttendanceForm()
     if request.method=='POST':
@@ -445,7 +415,7 @@ def admin_take_attendance_view(request,cl):
                 AttendanceModel.cl=cl
                 AttendanceModel.date=date
                 AttendanceModel.present_status=Attendances[i]
-                AttendanceModel.roll=students[i].roll
+                
                 AttendanceModel.save()
             return redirect('admin-attendance')
         else:
@@ -468,9 +438,14 @@ def admin_view_attendance_view(request,cl):
 
 #group related view by adminnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn
 
+@login_required(login_url="login")
+@user_passes_test(is_admin)
 def admin_group(request):
     return render(request, 'school/admin-group.html')
 
+
+@login_required(login_url="login")
+@user_passes_test(is_admin)
 def admin_add_group_view(request):
     form=forms.Groups()
     if request.method=='POST':
@@ -483,12 +458,18 @@ def admin_add_group_view(request):
         return HttpResponseRedirect('admin-group')
     return render(request,'school/admin_add_group.html',{'form':form})
 
+
+@login_required(login_url="login")
+@user_passes_test(is_admin)
 def admin_view_group_view(request):
     groups=models.Group.objects.all()
     return render(request,'school/admin_view_group.html',{'groups':groups})
 
 #notice related viewsssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
 
+
+@login_required(login_url="login")
+@user_passes_test(is_admin)
 def admin_notice_view(request):
     form=forms.NoticeForm()
     if request.method=='POST':
@@ -508,15 +489,12 @@ def admin_notice_view(request):
 
 
 #for TEACHER  LOGIN    SECTIONNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
-
+@user_passes_test(is_teacher)
 def teacher_dashboard_view(request):
     teacherdata=models.TeacherExtra.objects.all().filter(status=True,user_id=request.user.id)
     notice=models.Notice.objects.all()
     mydict={
-        'salary':teacherdata[0].salary,
-        'mobile':teacherdata[0].mobile,
-        'date':teacherdata[0].joindate,
-        'notice':notice
+        
     }
     return render(request,'school/teacher_dashboard.html',context=mydict)
 
