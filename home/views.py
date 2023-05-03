@@ -9,7 +9,7 @@ from django.core.mail import send_mail
 
 
 # Create your views here.
-@login_required(login_url = 'index')
+@login_required(login_url = 'login')
 def home(request):
     return render (request,'home/index.html')
 
