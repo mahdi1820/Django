@@ -1,4 +1,4 @@
-from django.shortcuts import render ,HttpResponseRedirect,redirect,reverse
+from django.shortcuts import render ,HttpResponseRedirect,redirect,reverse, get_object_or_404
 from django.contrib.auth.models import User,Group
 from django.contrib import messages
 from django.contrib.auth import authenticate,login as auth_login ,logout
@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required , user_passes_test
 from . import forms,models
 from django.db.models import Sum
 from django.core.mail import send_mail
+
 
 
 # Create your views here.
@@ -401,9 +402,9 @@ def admin_attendance_view(request):
 
 
 
-def admin_take_attendance_view(request,cl):
-    students=models.StudentExtra.objects.all()
-    print(students)
+def admin_take_attendance_view(request, lv):
+    group = models.Group.objects.get(name=lv)
+    students = models.StudentExtra.objects.filter(cl=group)
     aform=forms.AttendanceForm()
     if request.method=='POST':
         form=forms.AttendanceForm(request.POST)
@@ -412,29 +413,29 @@ def admin_take_attendance_view(request,cl):
             date=form.cleaned_data['date']
             for i in range(len(Attendances)):
                 AttendanceModel=models.Attendance()
-                AttendanceModel.cl=cl
+                AttendanceModel.cl=group
                 AttendanceModel.date=date
                 AttendanceModel.present_status=Attendances[i]
-                
                 AttendanceModel.save()
             return redirect('admin-attendance')
         else:
             print('form invalid')
     return render(request,'school/admin_take_attendance.html',{'students':students,'aform':aform})
 
-def admin_view_attendance_view(request,cl):
-    form=forms.AskDateForm()
-    if request.method=='POST':
-        form=forms.AskDateForm(request.POST)
+def admin_view_attendance_view(request, cl):
+    group = models.Group.objects.get(name=cl)
+    form = forms.AskDateForm()
+    if request.method == 'POST':
+        form = forms.AskDateForm(request.POST)
         if form.is_valid():
-            date=form.cleaned_data['date']
-            attendancedata=models.Attendance.objects.all().filter(date=date,cl=cl)
-            studentdata=models.StudentExtra.objects.all().filter(cl=cl)
-            mylist=zip(attendancedata,studentdata)
-            return render(request,'school/admin_view_attendance_page.html',{'cl':cl,'mylist':mylist,'date':date})
+            date = form.cleaned_data['date']
+            attendancedata = models.Attendance.objects.filter(date=date, cl=group)
+            studentdata = models.StudentExtra.objects.filter(cl=group)
+            mylist = zip(attendancedata, studentdata)
+            return render(request, 'school/admin_view_attendance_page.html', {'cl': cl, 'mylist': mylist, 'date': date})
         else:
             print('form invalid')
-    return render(request,'school/admin_view_attendance_ask_date.html',{'cl':cl,'form':form})
+    return render(request, 'school/admin_view_attendance_ask_date.html', {'cl': cl, 'form': form})
 
 #group related view by adminnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn
 
@@ -499,12 +500,11 @@ def teacher_dashboard_view(request):
     return render(request,'school/teacher_dashboard.html',context=mydict)
 
 
-
+@user_passes_test(is_teacher)
 def teacher_attendance_view(request):
     return render(request,'school/teacher_attendance.html')
 
 
-@login_required(login_url='teacherlogin')
 @user_passes_test(is_teacher)
 def teacher_take_attendance_view(request,cl):
     students=models.StudentExtra.objects.all().filter(cl=cl)
@@ -528,7 +528,6 @@ def teacher_take_attendance_view(request,cl):
 
 
 
-@login_required(login_url='teacherlogin')
 @user_passes_test(is_teacher)
 def teacher_view_attendance_view(request,cl):
     form=forms.AskDateForm()
@@ -546,7 +545,7 @@ def teacher_view_attendance_view(request,cl):
 
 
 
-@login_required(login_url='teacherlogin')
+
 @user_passes_test(is_teacher)
 def teacher_notice_view(request):
     form=forms.NoticeForm()
@@ -568,15 +567,15 @@ def teacher_notice_view(request):
 
 
 #FOR STUDENT AFTER THEIR Loginnnnnnnnnnnnnnnnnnnnn
-@login_required(login_url='studentlogin')
+
 @user_passes_test(is_student)
 def student_dashboard_view(request):
     studentdata=models.StudentExtra.objects.all().filter(status=True,user_id=request.user.id)
     notice=models.Notice.objects.all()
     mydict={
-        'roll':studentdata[0].roll,
+        
         'mobile':studentdata[0].mobile,
-        'fee':studentdata[0].fee,
+        
         'notice':notice
     }
     return render(request,'school/student_dashboard.html',context=mydict)

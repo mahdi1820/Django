@@ -44,8 +44,8 @@ urlpatterns = [
 
 
     path('admin-attendance', views.admin_attendance_view,name='admin-attendance'),
-    path('admin-take-attendance/<str:cl>', views.admin_take_attendance_view,name='admin-take-attendance'),
-    path('admin-view-attendance/<str:cl>', views.admin_view_attendance_view,name='admin-view-attendance'),
+    path('admin-take-attendance/<str:lv>/', views.admin_take_attendance_view,name='admin-take-attendance'),
+    path('admin-view-attendance/<str:cl>/', views.admin_view_attendance_view,name='admin-view-attendance'),
 
     path('admin-group', views.admin_group,name='admin-group'),
     path('admin-add-group', views.admin_add_group_view,name='admin-add-group'),

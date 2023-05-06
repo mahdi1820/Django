@@ -6,7 +6,7 @@
 <head>
   <meta charset="utf-8">
 
-  <title>SMS - Django</title>
+  <title>FNTIC | Admin panel</title>
 
   <style media="screen">
     a:link {
@@ -184,7 +184,7 @@
     <center>
 
       <img src="{% static 'image/admin-icn.png' %}" class="profile_image" alt="">
-      <h4>Admin : {{request.user.first_name}}</h4>
+      <h4>Admin : {{request.user.first_name}} {{ user.last_name }}</h4>
 
     </center>
 

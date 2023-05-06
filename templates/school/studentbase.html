@@ -4,7 +4,7 @@
 
 <head>
   <meta charset="utf-8">
-  <title>SMS - Django</title>
+  <title>FNTIC | Student Panel</title>
 
   <style media="screen">
     a:link {
@@ -19,7 +19,7 @@
 
     header {
       position: fixed;
-      background: #22242A;
+      background: #38b2b8;
       padding: 20px;
       width: 100%;
 
@@ -27,7 +27,7 @@
     }
 
     .left_area h3 {
-      color: #fff;
+      color: #000;
       margin: 0px;
       text-transform: uppercase;
       font-size: 22px;
@@ -35,6 +35,7 @@
     }
 
     .left_area span {
+      
       color: #19B3D3;
     }
 
@@ -50,7 +51,7 @@
       font-weight: 600;
       color: #fff;
       transition: 0.5s;
-      transition-property: background;
+
     }
 
     .logout_btn:hover {
@@ -58,7 +59,7 @@
     }
 
     .sidebar {
-      background: #2f323a;
+      background: #38b2b8;
       margin-top: 70px;
       padding-top: 30px;
       position: fixed;
@@ -77,13 +78,14 @@
     }
 
     .sidebar h4 {
-      color: #ccc;
+      color: #000;
+      text size: 12px;
       margin-top: 0;
       margin-bottom: 20px;
     }
 
     .sidebar a {
-      color: #fff;
+      color: #000;
       display: block;
       width: 100%;
       line-height: 60px;
@@ -91,11 +93,11 @@
       padding-left: 40px;
       box-sizing: border-box;
       transition: 0.5s;
-      transition-property: background;
+
     }
 
     .sidebar a:hover {
-      background:#e9e9e9;
+      background: #e9e9e9;
     }
 
     .sidebar i {
@@ -104,7 +106,7 @@
 
     label #sidebar_btn {
       z-index: 1;
-      color: #fff;
+      color: #000;
       position: fixed;
       cursor: pointer;
       left: 300px;
@@ -132,9 +134,12 @@
       width: 80px;
     }
 
+    #check:checked~.sidebar h4 {
+      display: none;
+    }
+
     .content {
       margin-left: 250px;
-      background: url(background.png) no-repeat;
       background-position: center;
       background-size: cover;
       height: 100vh;
@@ -165,10 +170,10 @@
       <i class="fas fa-bars" id="sidebar_btn"></i>
     </label>
     <div class="left_area">
-      <h3>SMS - Student</h3>
+      <h3>FNTIC | Student Panel</h3>
     </div>
     <div class="right_area">
-      <a href="/logout" class="logout_btn">Logout</a>
+      <a href="{%url 'admin_logout'%}" class="logout_btn">Logout</a>
     </div>
   </header>
   <!--header area end-->
@@ -176,8 +181,8 @@
   <div class="sidebar">
     <center>
 
-      <img src="{% static "images/user-default.png" %}" class="profile_image" alt="">
-      <h4>{{request.user.first_name}}</h4>
+      <img src="{% static 'image/OKP5EH0.png' %}" class="profile_image" alt="">
+      <h4>{{request.user.first_name}} {{request.user.last_name}}</h4>
 
     </center>
 

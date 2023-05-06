@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User 
 # Create your models here.
 
 
@@ -34,14 +34,21 @@ class TeacherExtra(models.Model):
         return self.user.first_name+" "+self.user.last_name
     
 level=[('L1','L1'),('L2','L2'),('L3','L3')]
+
 class Group(models.Model):
+    LEVEL_CHOICES = [
+        ('L1', 'L1'),
+        ('L2', 'L2'),
+        ('L3', 'L3'),
+    ]
+
     name = models.CharField(max_length=60)
     ability = models.PositiveIntegerField(null=True)
-    level = models.CharField(max_length=10,choices=level,default='L1')
+    level = models.CharField(max_length=10, choices=LEVEL_CHOICES, default='L1')
+
     def __str__(self):
         return self.name
-
-
+        
 
 
 class StudentExtra(models.Model):
@@ -62,10 +69,8 @@ class StudentExtra(models.Model):
 
 
 class Attendance(models.Model):
-    
     date=models.DateField()
-    cl=models.CharField(max_length=10)
-    
+    cl=models.ForeignKey(Group,on_delete=models.CASCADE)
     present_status = models.CharField(max_length=10)
 
 

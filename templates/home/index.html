@@ -247,8 +247,8 @@
     
     <nav class="navbar">
         <ul>
-            <li class="{% if current_path == 'home/' %}active{% endif %}"><a href="{%url 'home'%}" class="active">  home <i class="fa-solid fa-house"></i></a></li>
-            <div class="font-weight-bolder" >Welcome <span class='text-success'> {{user.first_name}} </span></div>
+            <li class="{% if current_path == 'home/' %}active{% endif %}"><a href="{%url 'home'%}" > <i class="fa-solid fa-house"></i> home </a></li>
+            <div class="font-weight-bolder" > <i class="fas fa-user"></i> Welcome <span class='text-success'> {{user.first_name}} {{ user.last_name }}</span>  </div>
             <li><a href="{%url 'admin_logout'%}" onclick="logout();">Logout <i class="fa-solid fa-arrow-right-from-bracket"></i></a></i>
     </nav>
       
