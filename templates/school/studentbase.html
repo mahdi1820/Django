@@ -28,14 +28,12 @@
 
     .left_area h3 {
       color: #000;
-      margin: 0px;
       text-transform: uppercase;
       font-size: 22px;
       font-weight: 900;
     }
 
     .left_area span {
-      
       color: #19B3D3;
     }
 
@@ -46,12 +44,11 @@
       float: right;
       margin-top: -30px;
       margin-right: 40px;
-      border-radius: 2px;
-      font-size: 15px;
-      font-weight: 600;
+      border-radius: 30px;
+      font-size: 16px;
+      font-weight: 500;
       color: #fff;
       transition: 0.5s;
-
     }
 
     .logout_btn:hover {
@@ -181,13 +178,13 @@
   <div class="sidebar">
     <center>
 
-      <img src="{% static 'image/OKP5EH0.png' %}" class="profile_image" alt="">
+      <img src="{% static 'image/Student.png' %}" class="profile_image" alt="">
       <h4>{{request.user.first_name}} {{request.user.last_name}}</h4>
 
     </center>
 
     <a href="/student-dashboard"><i class="fas fa-desktop"></i><span>Dashboard</span></a>
-    <a href="/student-attendance"><i class="fas fa-address-card"></i><span>View Attendance</span></a>
+    <a href="{% url 'student-attendance'%}"><i class="fas fa-address-card"></i><span>View Attendance</span></a>
 
   </div>
   <!--sidebar end-->
@@ -202,7 +199,7 @@
 
 
     <br><br><br>
-    {% include "school/footer.html" %}
+    
   </div>
   <!--content end-->
 

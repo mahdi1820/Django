@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User 
 # Create your models here.
-
+from datetime import datetime
 
 class AdminExtra(models.Model):
     user=models.OneToOneField(User,on_delete=models.CASCADE)
@@ -67,13 +67,11 @@ class StudentExtra(models.Model):
         return self.user.first_name
 
 
-
 class Attendance(models.Model):
     date=models.DateField()
     cl=models.ForeignKey(Group,on_delete=models.CASCADE)
     present_status = models.CharField(max_length=10)
-
-
+    
 
 class Notice(models.Model):
     date=models.DateField(auto_now=True)

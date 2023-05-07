@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required , user_passes_test
 from . import forms,models
 from django.db.models import Sum
 from django.core.mail import send_mail
-
+from datetime import datetime
 
 
 # Create your views here.
@@ -572,31 +572,37 @@ def teacher_notice_view(request):
 def student_dashboard_view(request):
     studentdata=models.StudentExtra.objects.all().filter(status=True,user_id=request.user.id)
     notice=models.Notice.objects.all()
+    
     mydict={
-        
+        'group': studentdata[0].cl,
         'mobile':studentdata[0].mobile,
-        
+        'level': studentdata[0].lv,
         'notice':notice
     }
     return render(request,'school/student_dashboard.html',context=mydict)
 
 
 
-@login_required(login_url='studentlogin')
+
 @user_passes_test(is_student)
 def student_attendance_view(request):
-    form=forms.AskDateForm()
-    if request.method=='POST':
-        form=forms.AskDateForm(request.POST)
+    form = forms.AskDateForm()
+    studentdata = None  # assign None initially
+    if request.method == 'POST':
+        form = forms.AskDateForm(request.POST)
         if form.is_valid():
-            date=form.cleaned_data['date']
-            studentdata=models.StudentExtra.objects.all().filter(user_id=request.user.id,status=True)
-            attendancedata=models.Attendance.objects.all().filter(date=date,cl=studentdata[0].cl,roll=studentdata[0].roll)
-            mylist=zip(attendancedata,studentdata)
-            return render(request,'school/student_view_attendance_page.html',{'mylist':mylist,'date':date})
+            date = form.cleaned_data['date']
+            studentdata = models.StudentExtra.objects.all().filter(user_id=request.user.id).first()
+            if studentdata is None:
+                # handle case where studentdata is not found
+                pass
+            else:
+                attendancedata = models.Attendance.objects.all().filter(date=date, cl=studentdata.cl)
+                mylist = zip(attendancedata, [studentdata])
+                return render(request, 'school/student_view_attendance_page.html', {'mylist': mylist, 'date': date})
         else:
             print('form invalid')
-    return render(request,'school/student_view_attendance_ask_date.html',{'form':form})
+    return render(request, 'school/student_view_attendance_ask_date.html', {'form': form})
 
 
 
@@ -607,8 +613,6 @@ def student_attendance_view(request):
 
 
 # for aboutus and contact ussssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
-def aboutus_view(request):
-    return render(request,'school/aboutus.html')
 
 def contactus_view(request):
     sub = forms.ContactusForm()

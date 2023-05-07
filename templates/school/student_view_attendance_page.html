@@ -32,14 +32,14 @@
         <thead>
           <tr>
             <th>Student Name</th>
-            <th>Student Roll</th>
+            <th>Student Group</th>
             <th>Present/Absent</th>
           </tr>
         </thead>
         {%for attendancedata,studentdata in mylist %}
         <tr>
           <td>{{studentdata.get_name}}</td>
-          <td>{{studentdata.roll}}</td>
+          <td>{{studentdata.cl}}</td>
           <td>{{attendancedata.present_status}}</td>
         </tr>
         {%endfor%}
