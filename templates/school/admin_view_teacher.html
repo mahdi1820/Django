@@ -39,32 +39,45 @@ written By : sumit kumar
 						<h6 class="panel-title">Teachers</h6>
 
 					</div>
-
-					<table class="table table-hover table-striped table-bordered" id="dev-table">
+          <table class="table table-hover table-striped table-bordered" id="dev-table">
             <thead>
-
                 <tr>
                     <th>Name</th>
                     <th>Contact</th>
-                    <th>Salary</th>
+                    <th>Groups</th>
                     <th>Joining Date</th>
                     <th>Actions</th>
-
                 </tr>
             </thead>
-            {% for t in teachers %}
-              <tr>
-                  <td> {{t.get_name}}</td>
-                  <td>{{t.mobile}}</td>
-                  <td>${{t.salary}}</td>
-                  <td>{{t.joindate}}</td>
-                  <td><a class="btn btn-primary btn-xs" href="{% url 'update-teacher' t.id  %}"  ><span class="glyphicon glyphicon-edit"></span></a>
-                  <a class="btn btn-danger btn-xs" href="{% url 'delete-teacher-from-school' t.id  %}"  ><span class="glyphicon glyphicon-trash"></span></a></td>
-
-              </tr>
-
-            {% endfor %}
-					</table>
+            <tbody>
+                {% for t in teachers %}
+                    <tr>
+                        <td>{{ t.get_name }}</td>
+                        <td>{{ t.mobile }}</td>
+                        <td>
+                            {% for group in t.groups.all %}
+                                {{ group.name }}{% if not forloop.last %}, {% endif %}
+                            {% empty %}
+                                No groups
+                            {% endfor %}
+                        </td>
+                        <td>{{ t.joindate }}</td>
+                        <td>
+                            <a class="btn btn-primary btn-xs" href="{% url 'update-teacher' t.id %}">
+                                <span class="glyphicon glyphicon-edit"></span>
+                            </a>
+                            <a class="btn btn-danger btn-xs" href="{% url 'delete-teacher-from-school' t.id %}">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        
+        
+        
 				</div>
 
 

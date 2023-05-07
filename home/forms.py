@@ -1,8 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from . import models
-
-#for admin
+from django.forms.widgets import CheckboxSelectMultiple
 class AdminSignupForm(forms.ModelForm):
     class Meta:
         model=User
@@ -24,16 +23,21 @@ class StudentExtraForm(forms.ModelForm):
         fields=['mobile','cl','lv','status']
 
 
-
 #for teacher related form
 class TeacherUserForm(forms.ModelForm):
     class Meta:
         model=User
         fields=['first_name','last_name','username','password','email']
 class TeacherExtraForm(forms.ModelForm):
+    groups = forms.ModelMultipleChoiceField(
+        queryset=models.Group.objects.all(), 
+        widget=CheckboxSelectMultiple,
+        required=False
+    )
+
     class Meta:
         model=models.TeacherExtra
-        fields=['salary','mobile','status']
+        fields=['groups','mobile','status']
 
 
 

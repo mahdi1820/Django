@@ -4,9 +4,11 @@ from django.contrib import messages
 from django.contrib.auth import authenticate,login as auth_login ,logout
 from django.contrib.auth.decorators import login_required , user_passes_test
 from . import forms,models
-from django.db.models import Sum
+from django.db.models import Sum , QuerySet
+
 from django.core.mail import send_mail
 from datetime import datetime
+from .forms import TeacherUserForm ,TeacherExtraForm
 
 
 # Create your views here.
@@ -185,9 +187,6 @@ def admin_dashboard_view(request):
     #admincount = admin_group.user_set.count()
     admincount = models.AdminExtra.objects.all().filter(status=True).count()
 
-    teachersalary=models.TeacherExtra.objects.filter(status=True).aggregate(Sum('salary'))
-    pendingteachersalary=models.TeacherExtra.objects.filter(status=False).aggregate(Sum('salary'))
-
   
     notice=models.Notice.objects.all()
 
@@ -203,9 +202,6 @@ def admin_dashboard_view(request):
 
         'admincount':admincount,
 
-
-        'teachersalary':teachersalary['salary__sum'],
-        'pendingteachersalary':pendingteachersalary['salary__sum'],
 
 
         'notice':notice
@@ -226,27 +222,40 @@ def admin_dashboard_view(request):
 @login_required(login_url="login")
 @user_passes_test(is_admin)
 def admin_add_teacher_view(request):
-    form1=forms.TeacherUserForm()
-    form2=forms.TeacherExtraForm()
-    mydict={'form1':form1,'form2':form2}
-    if request.method=='POST':
-        form1=forms.TeacherUserForm(request.POST)
-        form2=forms.TeacherExtraForm(request.POST)
+    form1 = TeacherUserForm()
+    form2 = TeacherExtraForm()
+    mydict = {'form1': form1, 'form2': form2}
+
+    if request.method == 'POST':
+        form1 = TeacherUserForm(request.POST)
+        form2 = TeacherExtraForm(request.POST)
+
         if form1.is_valid() and form2.is_valid():
-            user=form1.save()
+            user = form1.save(commit=False)
             user.set_password(user.password)
             user.save()
 
-            f2=form2.save(commit=False)
-            f2.user=user
-            f2.status=True
-            f2.save()
+            teacher_extra = form2.save(commit=False)
+            teacher_extra.user = user
+            teacher_extra.status = True
+            teacher_extra.save()
 
-            my_teacher_group = Group.objects.get_or_create(name='TEACHER')
-            my_teacher_group[0].user_set.add(user)
+            teacher_group, created = Group.objects.get_or_create(name='TEACHER')
+            teacher_group.user_set.add(user)
 
-        return HttpResponseRedirect('admin-teacher')
-    return render(request,'school/admin_add_teacher.html',context=mydict)
+            selected_groups = form2.cleaned_data.get('groups', None)
+            if selected_groups:
+                for group in selected_groups:
+                    teacher_extra.groups.add(group)
+
+                    # Add the user to the selected group and remove from the default "TEACHER" group
+                    group.user_set.add(user)
+                    teacher_group.user_set.remove(user)
+
+            return HttpResponseRedirect(reverse('admin-teacher'))
+
+    return render(request, 'school/admin_add_teacher.html', context=mydict)
+
 
 
 @login_required(login_url="login")
@@ -259,8 +268,12 @@ def admin_view_admin_view(request):
 @login_required(login_url="login")
 @user_passes_test(is_admin)
 def admin_view_teacher_view(request):
-    teachers=models.TeacherExtra.objects.all()
-    return render(request,'school/admin_view_teacher.html',{'teachers':teachers})
+    teachers = models.TeacherExtra.objects.all()
+    teacher_groups = {}
+    for teacher in teachers:
+        teacher_groups[teacher.id] = teacher.groups.all()
+    return render(request,'school/admin_view_teacher.html',{'teachers':teachers, 'teacher_groups':teacher_groups})
+
 
 
 
@@ -496,18 +509,29 @@ def teacher_dashboard_view(request):
     notice=models.Notice.objects.all()
     mydict={
         
+        'mobile':teacherdata[0].mobile,
+        'date': teacherdata[0].joindate,
+        'notice':notice
     }
     return render(request,'school/teacher_dashboard.html',context=mydict)
 
+@user_passes_test(is_teacher)
+def teacher_view_mygroup_view(request):
+    teacher = models.TeacherExtra.objects.get(user=request.user)
+    groups = teacher.groups.all()
+    return render(request,'school/teacher_view_mygroup.html',{'groups':groups})
 
 @user_passes_test(is_teacher)
 def teacher_attendance_view(request):
-    return render(request,'school/teacher_attendance.html')
+    teacher = models.TeacherExtra.objects.get(user=request.user)
+    groups = teacher.groups.all()
+    return render(request,'school/teacher_attendance.html',{'groups':groups})
 
 
 @user_passes_test(is_teacher)
-def teacher_take_attendance_view(request,cl):
-    students=models.StudentExtra.objects.all().filter(cl=cl)
+def teacher_take_attendance_view(request,lv):
+    group = models.Group.objects.get(name=lv)
+    students = models.StudentExtra.objects.filter(cl=group)
     aform=forms.AttendanceForm()
     if request.method=='POST':
         form=forms.AttendanceForm(request.POST)
@@ -516,10 +540,9 @@ def teacher_take_attendance_view(request,cl):
             date=form.cleaned_data['date']
             for i in range(len(Attendances)):
                 AttendanceModel=models.Attendance()
-                AttendanceModel.cl=cl
+                AttendanceModel.cl=group
                 AttendanceModel.date=date
                 AttendanceModel.present_status=Attendances[i]
-                AttendanceModel.roll=students[i].roll
                 AttendanceModel.save()
             return redirect('teacher-attendance')
         else:
@@ -530,19 +553,19 @@ def teacher_take_attendance_view(request,cl):
 
 @user_passes_test(is_teacher)
 def teacher_view_attendance_view(request,cl):
-    form=forms.AskDateForm()
-    if request.method=='POST':
-        form=forms.AskDateForm(request.POST)
+    group = models.Group.objects.get(name=cl)
+    form = forms.AskDateForm()
+    if request.method == 'POST':
+        form = forms.AskDateForm(request.POST)
         if form.is_valid():
-            date=form.cleaned_data['date']
-            attendancedata=models.Attendance.objects.all().filter(date=date,cl=cl)
-            studentdata=models.StudentExtra.objects.all().filter(cl=cl)
-            mylist=zip(attendancedata,studentdata)
-            return render(request,'school/teacher_view_attendance_page.html',{'cl':cl,'mylist':mylist,'date':date})
+            date = form.cleaned_data['date']
+            attendancedata = models.Attendance.objects.filter(date=date, cl=group)
+            studentdata = models.StudentExtra.objects.filter(cl=group)
+            mylist = zip(attendancedata, studentdata)
+            return render(request, 'school/teacher_view_attendance_page.html', {'cl': cl, 'mylist': mylist, 'date': date})
         else:
             print('form invalid')
-    return render(request,'school/teacher_view_attendance_ask_date.html',{'cl':cl,'form':form})
-
+    return render(request, 'school/teacher_view_attendance_ask_date.html', {'cl': cl, 'form': form})
 
 
 
