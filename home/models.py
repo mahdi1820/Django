@@ -36,8 +36,8 @@ class Group(models.Model):
     def __str__(self):
         return self.name
 
-        
-
+    class Meta:
+        ordering = ['name'] 
 
 class TeacherExtra(models.Model):
     user=models.OneToOneField(User,on_delete=models.CASCADE)
@@ -87,7 +87,8 @@ class Notice(models.Model):
     by=models.CharField(max_length=20,null=True,default='school')
     message=models.CharField(max_length=500)
 
-
+    def __str__(self):
+        return self.by
 
 
     
