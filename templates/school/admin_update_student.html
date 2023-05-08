@@ -56,7 +56,6 @@
       <div class="note">
         <p>Update Student Details</p>
       </div>
-
       <div class="form-content">
         <div class="row">
           <div class="col-md-6">
@@ -64,27 +63,25 @@
               {% render_field form1.first_name class="form-control" placeholder="First Name" %}
             </div>
             <div class="form-group">
-              {% render_field form1.username class="form-control" placeholder="Username" %}
-            </div>
-            <div class="form-group">
-              {% render_field form2.mobile class="form-control" placeholder="Contact" %}
-            </div>
-            <div class="form-group">
-              {% render_field form2.cl class="form-control" placeholder="Class" %}
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="form-group">
               {% render_field form1.last_name class="form-control" placeholder="Last Name" %}
+            </div>
+            <div class="form-group">
+              {% render_field form1.username class="form-control" placeholder="Username" %}
             </div>
             <div class="form-group">
               {% render_field form1.password class="form-control" placeholder="Password" %}
             </div>
+            
+          </div>
+          <div class="col-md-6">
             <div class="form-group">
-              {% render_field form2.fee class="form-control" placeholder="Fee" %}
+              {% render_field form2.mobile class="form-control" placeholder="Contact" %}
             </div>
             <div class="form-group">
-              {% render_field form2.roll class="form-control" placeholder="Roll" %}
+              {% render_field form2.lv class="form-control" placeholder="lv" %}
+            </div>
+            <div class="form-group">
+              {% render_field form2.cl class="form-control" placeholder="Class" %}
             </div>
           </div>
         </div>

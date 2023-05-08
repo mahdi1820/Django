@@ -31,9 +31,11 @@ class Group(models.Model):
     name = models.CharField(max_length=60)
     ability = models.PositiveIntegerField(null=True)
     level = models.CharField(max_length=10, choices=LEVEL_CHOICES, default='L1')
+    
 
     def __str__(self):
         return self.name
+
         
 
 
