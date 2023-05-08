@@ -9,9 +9,10 @@ from django.core.mail import send_mail
 from datetime import datetime
 from .forms import TeacherUserForm ,TeacherExtraForm
 # Create your views here.
+
 @login_required(login_url = 'login')
 def home(request):
-    return render (request,'home/index.html')
+    return render (request,'school/index.html')
 
 def login(request):
     if request.method == 'POST':
@@ -24,7 +25,7 @@ def login(request):
             return redirect('home')
         else:
             messages.error(request,'Invalid username or password . Please try again.')
-    return render (request,'home/Alogin.html')
+    return render (request,'school/Alogin.html')
 
 @login_required(login_url = 'login')
 def Logout(request):
@@ -40,7 +41,7 @@ def is_student(user):
 
 @login_required(login_url = 'login')
 def master(request):
-    return render (request,'home/master.html')
+    return render (request,'school/master.html')
 #------------------------------------------------------------------
 
 def admin_admin_view(request):
@@ -437,12 +438,14 @@ def admin_notice_view(request):
             return redirect('admin-dashboard')
     return render(request,'school/admin_notice.html',{'form':form})
 
+
+
 #for TEACHER  LOGIN    SECTIONNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
 
 
 
 def admin_teacher_view(request):
-    return render(request,'home/admin_teacher.html')
+    return render(request,'school/admin_teacher.html')
 
     
 @login_required(login_url="login")
