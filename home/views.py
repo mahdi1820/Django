@@ -440,6 +440,7 @@ def admin_notice_view(request):
 
 
 
+
 #for TEACHER  LOGIN    SECTIONNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
 
 
@@ -555,9 +556,6 @@ def student_dashboard_view(request):
     }
     return render(request,'school/student_dashboard.html',context=mydict)
 
-
-
-
 @login_required(login_url="login")
 @user_passes_test(is_student)
 def student_attendance_view(request):
@@ -578,17 +576,3 @@ def student_attendance_view(request):
         else:
             print('form invalid')
     return render(request, 'school/student_view_attendance_ask_date.html', {'form': form})
-
-# for aboutus and contact ussssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
-
-def contactus_view(request):
-    sub = forms.ContactusForm()
-    if request.method == 'POST':
-        sub = forms.ContactusForm(request.POST)
-        if sub.is_valid():
-            email = sub.cleaned_data['Email']
-            name=sub.cleaned_data['Name']
-            message = sub.cleaned_data['Message']
-            send_mail(str(name)+' || '+str(email),message,settings.EMAIL_HOST_USER, settings.EMAIL_RECEIVING_USER, fail_silently = False)
-            return render(request, 'school/contactussuccess.html')
-    return render(request, 'school/contactus.html', {'form':sub})
