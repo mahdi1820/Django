@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.models import User
 from . import models
 from django.forms.widgets import CheckboxSelectMultiple
+from django.forms import TimeInput
 class AdminSignupForm(forms.ModelForm):
     class Meta:
         model=User
@@ -52,12 +53,40 @@ class AttendanceForm(forms.Form):
 class AskDateForm(forms.Form):
     date=forms.DateField()
 
-
-
 class Groups(forms.ModelForm):
     class Meta:
         model=models.Group
         fields=['name','ability','level']
+
+class Rooms(forms.ModelForm):
+    class Meta:
+        model=models.room
+        fields=['name','ability']
+
+class Days(forms.ModelForm):
+    class Meta:
+        model=models.Days
+        fields=['name']
+
+class Modules(forms.ModelForm):
+    class Meta:
+        model=models.Module
+        fields=['name','codeM','level']
+
+
+
+
+class Time24HInput(TimeInput):
+    input_type = 'time'
+    format = '%H:%M'
+class DurationForm(forms.ModelForm):
+    name = forms.ModelChoiceField(queryset=models.Days.objects.all(), widget=forms.Select(attrs={'class': 'form-control'}), to_field_name='name')
+    start_time = forms.TimeField(widget=Time24HInput, label='Start Time')
+    end_time = forms.TimeField(widget=Time24HInput, label='End Time')
+    class Meta:
+        model = models.Duration
+        fields = ['name', 'start_time', 'end_time']
+
 
 
 
@@ -66,11 +95,3 @@ class NoticeForm(forms.ModelForm):
     class Meta:
         model=models.Notice
         fields='__all__'
-
-
-
-#for contact us page
-class ContactusForm(forms.Form):
-    Name = forms.CharField(max_length=30)
-    Email = forms.EmailField()
-    Message = forms.CharField(max_length=500,widget=forms.Textarea(attrs={'rows': 3, 'cols': 30}))

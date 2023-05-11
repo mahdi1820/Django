@@ -7,7 +7,7 @@ from . import forms,models
 from django.db.models import Sum 
 from django.core.mail import send_mail
 from datetime import datetime
-from .forms import TeacherUserForm ,TeacherExtraForm
+from .forms import TeacherUserForm ,TeacherExtraForm,DurationForm
 # Create your views here.
 
 @login_required(login_url = 'login')
@@ -83,12 +83,14 @@ def afterlogin_view(request):
 @user_passes_test(is_admin)
 def admin_dashboard_view(request):
     teachercount=models.TeacherExtra.objects.all().filter(status=True).count()
-    pendingteachercount=models.TeacherExtra.objects.all().filter(status=False).count()
+    
 
     studentcount=models.StudentExtra.objects.all().filter(status=True).count()
-    pendingstudentcount=models.StudentExtra.objects.all().filter(status=False).count()
+    
 
     groupcount = models.Group.objects.all().count()
+
+    roomcount = models.room.objects.all().count()
 
     admincount = models.AdminExtra.objects.all().filter(status=True).count()
   
@@ -101,6 +103,8 @@ def admin_dashboard_view(request):
         'studentcount':studentcount,
         
         'groupcount':groupcount,
+
+        'roomcount':roomcount,
 
         'admincount':admincount,
 
@@ -423,6 +427,233 @@ def delete_group_from_University_view(request,pk):
     group.delete()
     return redirect('admin-view-group')
 #notice related viewsssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
+
+
+@login_required(login_url="login")
+@user_passes_test(is_admin)
+def admin_add_room_view(request):
+    form=forms.Rooms()
+    if request.method=='POST':
+        form=forms.Rooms(request.POST)
+        if  form.is_valid():
+            
+            Room=form.save()
+            Room.save()
+
+        return HttpResponseRedirect('admin-add-room')
+    return render(request,'school/admin_add_room.html',{'form':form})
+
+
+@login_required(login_url="login")
+@user_passes_test(is_admin)
+def admin_view_room_view(request):
+    rooms = models.room.objects.all()
+    return render(request,'school/admin_view_classrooms.html',{'rooms':rooms})
+
+@login_required(login_url="login")
+@user_passes_test(is_admin)
+def update_room_view(request,pk):
+    rooms = models.room.objects.get(id=pk)
+    form=forms.Rooms(instance=rooms)
+    mydict={'form':form}
+    if request.method=='POST':
+        form=forms.Rooms(request.POST,instance=rooms)
+        if  form.is_valid():
+            rooms=form.save()
+            rooms.save()
+            return redirect('admin-view-room')
+    return render(request,'school/admin_update_classrooms.html',context=mydict)
+
+@login_required(login_url="login")
+@user_passes_test(is_admin)
+def delete_room_from_University_view(request,pk):
+    rooms=models.room.objects.get(id=pk)
+    rooms.delete()
+    return redirect('admin-view-room')
+
+
+@login_required(login_url="login")
+@user_passes_test(is_admin)
+def admin_duration_module(request):
+    return render(request, 'school/admin-duration-module.html')
+
+
+
+@login_required(login_url="login")
+@user_passes_test(is_admin)
+def admin_add_day_view(request):
+    form=forms.Days()
+    if request.method=='POST':
+        form=forms.Days(request.POST)
+        if  form.is_valid():
+            Day=form.save()
+            Day.save()
+
+        return HttpResponseRedirect('admin-add-days')
+    return render(request,'school/admin_add_days.html',{'form':form})
+
+@login_required(login_url="login")
+@user_passes_test(is_admin)
+def admin_view_day_view(request):
+    days = models.Days.objects.all()
+    return render(request,'school/admin_view_days.html',{'days':days})
+
+@login_required(login_url="login")
+@user_passes_test(is_admin)
+def update_day_view(request,pk):
+    days = models.Days.objects.get(id=pk)
+    form=forms.Days(instance=days)
+    mydict={'form':form}
+    if request.method=='POST':
+        form=forms.Days(request.POST,instance=days)
+        if  form.is_valid():
+            days=form.save()
+            days.save()
+            return redirect('admin-view-days')
+    return render(request,'school/admin_update_days.html',context=mydict)
+
+@login_required(login_url="login")
+@user_passes_test(is_admin)
+def delete_day_from_University_view(request,pk):
+    days=models.Days.objects.get(id=pk)
+    days.delete()
+    return redirect('admin-view-days')
+
+
+
+
+@login_required(login_url="login")
+@user_passes_test(is_admin)
+def admin_add_module_view(request):
+    form=forms.Modules()
+    if request.method=='POST':
+        form=forms.Modules(request.POST)
+        if  form.is_valid():
+            Module=form.save()
+            Module.save()
+        return HttpResponseRedirect('admin-add-module')
+    return render(request,'school/admin_add_module.html',{'form':form})
+
+@login_required(login_url="login")
+@user_passes_test(is_admin)
+def admin_view_module_view(request):
+    module = models.Module.objects.all()
+    return render(request,'school/admin_view_module.html',{'module':module})
+
+@login_required(login_url="login")
+@user_passes_test(is_admin)
+def update_module_view(request,pk):
+    module = models.Module.objects.get(id=pk)
+    form=forms.Modules(instance=module)
+    mydict={'form':form}
+    if request.method=='POST':
+        form=forms.Modules(request.POST,instance=module)
+        if  form.is_valid():
+            module=form.save()
+            module.save()
+            return redirect('admin-view-module')
+    return render(request,'school/admin_update_module.html',context=mydict)
+
+@login_required(login_url="login")
+@user_passes_test(is_admin)
+def delete_module_from_University_view(request,pk):
+    module=models.Module.objects.get(id=pk)
+    module.delete()
+    return redirect('admin-view-module')
+
+
+
+
+@login_required(login_url="login")
+@user_passes_test(is_admin)
+def admin_add_duration_view(request):
+    form = DurationForm()
+    if request.method == 'POST':
+        form = DurationForm(request.POST)
+        if form.is_valid():
+            duration = form.save(commit=False)
+            duration.name = form.cleaned_data['name']
+            duration.start_time = form.cleaned_data['start_time']
+            duration.end_time = form.cleaned_data['end_time']
+            duration.save()
+            return HttpResponseRedirect('admin-add-duration')
+    return render(request, 'school/admin_add_duration.html', {'form': form})
+
+@login_required(login_url="login")
+@user_passes_test(is_admin)
+def admin_view_duration_view(request):
+    duration = models.Duration.objects.all()
+    return render(request,'school/admin_view_duration.html',{'duration':duration})
+
+@login_required(login_url="login")
+@user_passes_test(is_admin)
+def update_duration_view(request,pk):
+    duration = models.Duration.objects.get(id=pk)
+    form=forms.DurationForm(instance=duration)
+    mydict={'form':form}
+    if request.method=='POST':
+        form=forms.DurationForm(request.POST,instance=duration)
+        if  form.is_valid():
+            duration=form.save()
+            duration.save()
+            return redirect('admin-view-duration')
+    return render(request,'school/admin_update_duration.html',context=mydict)
+
+@login_required(login_url="login")
+@user_passes_test(is_admin)
+def delete_duration_from_University_view(request,pk):
+    duration=models.Duration.objects.get(id=pk)
+    duration.delete()
+    return redirect('admin-view-duration')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@login_required(login_url="login")
+@user_passes_test(is_admin)
+def admin_Activities(request):
+    return render(request, 'school/admin-Activities.html')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 @login_required(login_url="login")

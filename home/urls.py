@@ -44,6 +44,36 @@ urlpatterns = [
     path('delete-group-from-University/<int:pk>', views.delete_group_from_University_view,name='delete-group-from-University'),
     path('update-group/<int:pk>', views.update_group_view,name='update-group'),
     
+    path('admin-add-room', views.admin_add_room_view,name='admin-add-room'),
+    path('admin-view-room', views.admin_view_room_view,name='admin-view-room'),
+    path('delete-room-from-University/<int:pk>', views.delete_room_from_University_view,name='delete-room-from-University'),
+    path('update-room/<int:pk>', views.update_room_view,name='update-room'),
+
+    path('admin-duration-module', views.admin_duration_module,name='admin-duration-module'),
+    path('admin-add-days', views.admin_add_day_view,name='admin-add-days'),
+    path('admin-view-days', views.admin_view_day_view,name='admin-view-days'),
+    path('delete-days-from-University/<int:pk>', views.delete_day_from_University_view,name='delete-days-from-University'),
+    path('update-days/<int:pk>', views.update_day_view,name='update-days'),
+
+
+    path('admin-add-module', views.admin_add_module_view,name='admin-add-module'),
+    path('admin-view-module', views.admin_view_module_view,name='admin-view-module'),
+    path('delete-module-from-University/<int:pk>', views.delete_module_from_University_view,name='delete-module-from-University'),
+    path('update-module/<int:pk>', views.update_module_view,name='update-module'),
+
+
+    path('admin-add-duration', views.admin_add_duration_view,name='admin-add-duration'),
+    path('admin-view-duration', views.admin_view_duration_view,name='admin-view-duration'),
+    path('delete-duration-from-University/<int:pk>', views.delete_duration_from_University_view,name='delete-duration-from-University'),
+    path('update-duration/<int:pk>', views.update_duration_view,name='update-duration'),
+
+
+
+
+
+
+    path('admin-Activities', views.admin_Activities,name='admin-Activities'),
+
     path('admin-notice', views.admin_notice_view,name='admin-notice'),
 
 

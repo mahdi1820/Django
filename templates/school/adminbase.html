@@ -78,18 +78,18 @@
       margin-bottom: 10px;
     }
 
-    .sidebar h4 {
+    .sidebar h5 {
       color: #000;
       text size: 12px;
       margin-top: 0;
-      margin-bottom: 20px;
+      margin-bottom: 10px;
     }
 
     .sidebar a {
       color: #000;
       display: block;
       width: 100%;
-      line-height: 60px;
+      line-height: 50px;
       text-decoration: none;
       padding-left: 40px;
       box-sizing: border-box;
@@ -135,7 +135,7 @@
       width: 80px;
     }
 
-    #check:checked~.sidebar h4 {
+    #check:checked~.sidebar h5 {
       display: none;
     }
 
@@ -157,7 +157,7 @@
   </style>
 
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 
 </head>
@@ -183,7 +183,7 @@
     <center>
 
       <img src="{% static 'image/admin-icn.png' %}" class="profile_image" alt="">
-      <h4>Admin : {{request.user.first_name}} {{ user.last_name }}</h4>
+      <h5>Admin : {{request.user.first_name}} {{ user.last_name }}</h5>
 
     </center>
 
@@ -192,7 +192,10 @@
     <a href="/admin-teacher"><i class="fas fa-chalkboard-teacher"></i><span>Teacher</span></a>
     <a href="/admin-student"> <i class="fas fa-user-graduate"></i> <span>Student</span></a>
     <a href="/admin-attendance"><i class="fas fa-address-card"></i><span>Attendance</span></a>
-    <a href="/admin-group"><i class="fas fa-users"></i><span>Group</span></a>
+    <a href="/admin-group"><i class="fas fa-users"></i><span>Group and Classroom</span></a>
+    <a href="/admin-duration-module"><i class="fas fa-calendar-alt"></i><span>Duration and module</span></a>
+    <a href="/admin-Activities"><i class="fas fa-network-wired"></i><span>Activities</span></a>
+    
     <a href="/admin-notice"><i class="fas fa-bullhorn"></i><span>Notice</span></a>
 
 

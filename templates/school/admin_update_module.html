@@ -49,13 +49,12 @@
 
 </head>
 
-<!------ signup page for teacher by admin(sumit)  ---------->
 <form method="post">
   {% csrf_token %}
   <div class="container register-form">
     <div class="form">
       <div class="note">
-        <p>Update group Details</p>
+        <p>Update Module Details</p>
       </div>
 
     <div class="form-content">
@@ -65,7 +64,7 @@
                     {% render_field form.name class="form-control" placeholder="Name" %}
                 </div>
                 <div class="form-group">
-                    {% render_field form.ability class="form-control" placeholder="Ability" %}
+                    {% render_field form.codeM class="form-control" placeholder="code Module" %}
                 </div>
                 <div class="form-group">
                     {% render_field form.level class="form-control" placeholder="Level" %}

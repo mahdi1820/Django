@@ -94,10 +94,36 @@ class Notice(models.Model):
     
 codeM = [('C','C'),('TD','TD'),('TP','TP')]
 
-class material (models.Model):
+class Module(models.Model):
     name = models.CharField(max_length=50)
     codeM = models.CharField(max_length=10,choices=codeM,default='C')   
+    level = models.CharField(max_length=10,choices=level,default='L1')
     
+    def __str__(self):
+        return self.name
+
+
 class room(models.Model):
     name = models.CharField(max_length=40)
     ability = models.PositiveIntegerField(null=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Days(models.Model):
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
+
+
+class Duration(models.Model):
+    name = models.ForeignKey(Days, on_delete=models.CASCADE)
+    start_time = models.TimeField(null=True)
+    end_time = models.TimeField(null=True)
+
+
+
+    
+    
