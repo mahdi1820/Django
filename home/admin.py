@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Attendance,StudentExtra,TeacherExtra,Notice,Group,AdminExtra,room,Module,Days,Duration
+from .models import Attendance,StudentExtra,TeacherExtra,Notice,Group,AdminExtra,room,Module,Days,Duration,Activities
 # Register your models here.
 
 admin.site.site_header = 'FNTIC-UKMO-ADMIN'
@@ -19,7 +19,7 @@ class AdminExtraAdmin(admin.ModelAdmin):
 admin.site.register(AdminExtra, AdminExtraAdmin)
 
 class AttendanceAdmin(admin.ModelAdmin):
-    pass
+    list_display = ['cl','date', 'present_status','activity','student']
 admin.site.register(Attendance, AttendanceAdmin)
 
 admin.site.register(Group)
@@ -28,6 +28,10 @@ admin.site.register(room)
 
 admin.site.register(Module)
 
+
+class ActivitiesAdmin(admin.ModelAdmin):
+    list_display = ['module','duration', 'classroom','teacher','group']
+admin.site.register(Activities,ActivitiesAdmin)
 
 class DurationAdmin(admin.ModelAdmin):
     list_display = ['name','start_time', 'end_time']

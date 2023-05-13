@@ -55,24 +55,30 @@
   <div class="container register-form">
     <div class="form">
       <div class="note">
-        <p>Hire New group To University</p>
+        <p>Update Activity Details</p>
       </div>
 
     <div class="form-content">
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
-                    {% render_field form.name class="form-control" placeholder="Name" %}
+                    Name group:{% render_field form.group class="form-control" placeholder="group" %}
                 </div>
                 <div class="form-group">
-                    {% render_field form.ability class="form-control" placeholder="Ability" %}
+                    Name Teacher:{% render_field form.teacher class="form-control" placeholder="Teacher" %}
                 </div>
                 <div class="form-group">
-                    {% render_field form.level class="form-control" placeholder="Level" %}
+                    Module:{% render_field form.module class="form-control" placeholder="module" %}
+                </div>
+                <div class="form-group">
+                    Duree:{% render_field form.duration class="form-control" placeholder="Duration" %}
+                </div>
+                <div class="form-group">
+                    Class:{% render_field form.classroom class="form-control" placeholder="Classroom" %}
                 </div>
             </div>
         </div>
-        <button type="submit" class="btnSubmit">Add</button>
+        <button type="submit" class="btnSubmit">Update</button>
     </div>
     </div>
   </div>

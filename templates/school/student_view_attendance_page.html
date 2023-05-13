@@ -19,33 +19,46 @@
     .row {
       margin: 100px;
     }
+    
   </style>
+
 
 </head>
 <div class="container">
   <div class="row">
     <div class="panel panel-primary">
       <div class="panel-heading">
-        <h6 class="panel-title">Your Attendance of date {{date}}</h6>
+        <h6 class="panel-title">{{ student.user.get_full_name }}'s Attendance of date {{date}}</h6>
       </div>
       <table class="table table-hover table-striped table-bordered" id="dev-table">
         <thead>
           <tr>
-            <th>Student Name</th>
             <th>Student Group</th>
+            <th>Module</th>
+            <th>Duration</th>
             <th>Present/Absent</th>
           </tr>
         </thead>
-        {%for attendancedata,studentdata in mylist %}
-        <tr>
-          <td>{{studentdata.get_name}}</td>
-          <td>{{studentdata.cl}}</td>
-          <td>{{attendancedata.present_status}}</td>
-        </tr>
-        {%endfor%}
+        {% if mylist %}
+          {% for activity, attendance in mylist %}
+            <tr>
+              <td>{{ student.cl }}</td>
+              <td>{{ activity.module }}</td>
+              <td>{{ attendance.get_duration }}</td>
+              <td>{{ attendance.present_status }}</td>
+            </tr>
+          {% endfor %}
+        {% else %}
+          <tr>
+            <td colspan="4">No attendance found for the selected date</td>
+          </tr>
+        {% endif %}
       </table>
     </div>
   </div>
 </div>
+
+
+
 
 {% endblock content %}

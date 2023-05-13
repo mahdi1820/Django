@@ -68,17 +68,20 @@ urlpatterns = [
     path('update-duration/<int:pk>', views.update_duration_view,name='update-duration'),
 
 
-
-
-
-
     path('admin-Activities', views.admin_Activities,name='admin-Activities'),
+    path('admin-add-Activities', views.admin_add_Activities_view,name='admin-add-Activities'),
+    path('admin-view-Activities', views.admin_view_Activities_view,name='admin-view-Activities'),
+    path('delete-Activities-from-University/<int:pk>', views.delete_Activities_from_University_view,name='delete-Activities-from-University'),
+    path('update-Activities/<int:pk>', views.update_Activities_view,name='update-Activities'),
+
 
     path('admin-notice', views.admin_notice_view,name='admin-notice'),
 
 
     path('teacher-dashboard', views.teacher_dashboard_view,name='teacher-dashboard'),
     path('teacher-view-mygroup', views.teacher_view_mygroup_view,name='teacher-view-mygroup'),
+    path('teacher-view-myactivity', views.teacher_view_myactivity_view,name='teacher-view-myactivity'),
+
     path('teacher-attendance', views.teacher_attendance_view,name='teacher-attendance'),
     path('teacher-take-attendance/<str:lv>', views.teacher_take_attendance_view,name='teacher-take-attendance'),
     path('teacher-view-attendance/<str:cl>', views.teacher_view_attendance_view,name='teacher-view-attendance'),

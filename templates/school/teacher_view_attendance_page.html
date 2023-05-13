@@ -31,14 +31,18 @@
           <tr>
             <th>Student Name</th>
             <th>Student Group</th>
+            <th>Module</th>
+            <th>Duration</th>
             <th>Present/Absent</th>
           </tr>
         </thead>
-        {%for attendancedata,studentdata in mylist %}
+        {%for student, attendance in mylist %}
         <tr>
-          <td>{{studentdata.get_name}}</td>
-          <td>{{studentdata.cl}}</td>
-          <td>{{attendancedata.present_status}}</td>
+          <td>{{student.get_name}}</td>
+          <td>{{student.cl}}</td>
+          <td>{{ attendance.get_module }}</td>
+          <td>{{ attendance.get_duration }}</td>
+          <td>{{attendance.present_status}}</td>
         </tr>
         {%endfor%}
       </table>

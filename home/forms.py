@@ -3,6 +3,9 @@ from django.contrib.auth.models import User
 from . import models
 from django.forms.widgets import CheckboxSelectMultiple
 from django.forms import TimeInput
+from django.core.exceptions import ValidationError
+
+
 class AdminSignupForm(forms.ModelForm):
     class Meta:
         model=User
@@ -43,12 +46,7 @@ class TeacherExtraForm(forms.ModelForm):
 
 
 
-#for Attendance related form
-presence_choices=(('Present','Present'),('Absent','Absent'))
-class AttendanceForm(forms.Form):
-    present_status=forms.ChoiceField( choices=presence_choices)
-    date=forms.DateField()
-    
+
 
 class AskDateForm(forms.Form):
     date=forms.DateField()
@@ -87,7 +85,93 @@ class DurationForm(forms.ModelForm):
         model = models.Duration
         fields = ['name', 'start_time', 'end_time']
 
+class Activities(forms.ModelForm):
+    module = forms.ModelChoiceField(queryset=models.Module.objects.all(), widget=forms.Select(attrs={'class': 'form-control'}))
+    duration = forms.ModelChoiceField(queryset=models.Duration.objects.all(), widget=forms.Select(attrs={'class': 'form-control'}))
+    classroom = forms.ModelChoiceField(queryset=models.room.objects.all(), widget=forms.Select(attrs={'class': 'form-control'}))
+    teacher = forms.ModelChoiceField(queryset=models.TeacherExtra.objects.all(), widget=forms.Select(attrs={'class': 'form-control'}))
+    group = forms.ModelChoiceField(queryset=models.Group.objects.all(), widget=forms.Select(attrs={'class': 'form-control'}))
+    class Meta:
+        model = models.Activities
+        fields = ['module', 'duration', 'classroom', 'teacher','group']
+        
+    def __init__(self, *args, **kwargs):
+        super(Activities, self).__init__(*args, **kwargs)
+        
+        # Modify the label of each option in the dropdown menu for each field
+        self.fields['module'].label_from_instance = lambda obj: f'{obj.name} ({obj.codeM}) - {obj.level}'
+        self.fields['duration'].label_from_instance = lambda obj: f'{obj.name} [{obj.start_time} - {obj.end_time}]'
+        self.fields['classroom'].label_from_instance = lambda obj: f'{obj.name} '
+        self.fields['teacher'].label_from_instance = lambda obj: f'{obj.user.first_name} {obj.user.last_name} '
+        self.fields['group'].label_from_instance = lambda obj: f'{obj.name} '
 
+    def clean(self):
+        cleaned_data = super().clean()
+
+        # Check if there is already an activity with the selected duration, classroom, teacher, group, and module
+        duration = cleaned_data.get('duration')
+        classroom = cleaned_data.get('classroom')
+        teacher = cleaned_data.get('teacher')
+        module = cleaned_data.get('module')
+        group = cleaned_data.get('group')
+        if duration and classroom and teacher and group and module:
+            conflicting_activities = models.Activities.objects.filter(
+                duration=duration,
+                classroom=classroom,
+                teacher=teacher,
+                group=group,
+                module=module,
+            ).exclude(pk=self.instance.pk if self.instance else None)
+            if conflicting_activities.exists():
+                msg = 'An activity with the selected duration, classroom, teacher, group, and module already exists.'
+                raise ValidationError(msg)
+
+        return cleaned_data
+
+    def save(self, commit=True):
+            # Get the instance of the model being edited
+            instance = super().save(commit=False)
+            
+            # Set the values of the fields
+            instance.name = self.cleaned_data['module']
+            instance.duration = self.cleaned_data['duration']
+            instance.classroom = self.cleaned_data['classroom']
+            instance.teacher = self.cleaned_data['teacher']
+            instance.group = self.cleaned_data['group']
+            
+            # Save the instance to the database
+            if commit:
+                instance.save()
+            return instance
+
+
+
+#for Attendance related form
+class AttendanceForm(forms.Form):
+    present_status = forms.ChoiceField(choices=(('Present', 'Present'), ('Absent', 'Absent')))
+    date = forms.DateField()
+    group = forms.ModelChoiceField(queryset=models.Group.objects.all(), widget=forms.Select(attrs={'class': 'form-control'}))
+    activity = forms.ModelChoiceField(queryset=models.Activities.objects.none(), widget=forms.Select(attrs={'class': 'form-control'}))
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['activity'].queryset = models.Activities.objects.none()
+
+        if 'group' in self.data:
+            group_id = int(self.data.get('group'))
+            self.fields['activity'].queryset = models.Activities.objects.filter(group_id=group_id)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        activity = cleaned_data.get('activity')
+        if activity:
+            # Check if attendance has already been marked for this activity on the selected date
+            if models.Attendance.objects.filter(activity=activity, date=cleaned_data['date']).exists():
+                msg = 'Attendance has already been marked for this activity on the selected date.'
+                self.add_error('date', msg)
+                self.add_error('activity', msg)
+
+        return cleaned_data
 
 
 #for notice related form

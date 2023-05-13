@@ -17,6 +17,8 @@ class AdminExtra(models.Model):
     def get_name(self):
         return self.user.first_name+" "+self.user.last_name
     
+    def __str__(self):
+        return f"{self.user.first_name} {self.user.last_name}"
 
 
 level=[('L1','L1'),('L2','L2'),('L3','L3')]
@@ -57,6 +59,8 @@ class TeacherExtra(models.Model):
     def get_name(self):
         return self.user.first_name+" "+self.user.last_name
     
+    def __str__(self):
+        return f"{self.user.first_name} {self.user.last_name}"
 
 
 
@@ -75,12 +79,10 @@ class StudentExtra(models.Model):
     def __str__(self):
         return self.user.first_name
 
+    def __str__(self):
+        return f"{self.user.first_name} {self.user.last_name}"
 
-class Attendance(models.Model):
-    date=models.DateField()
-    cl=models.ForeignKey(Group,on_delete=models.CASCADE)
-    present_status = models.CharField(max_length=10)
-    
+
 
 class Notice(models.Model):
     date=models.DateField(auto_now=True)
@@ -123,7 +125,40 @@ class Duration(models.Model):
     start_time = models.TimeField(null=True)
     end_time = models.TimeField(null=True)
 
+    def __str__(self):
+        return f"{self.name} ({self.start_time} - {self.end_time})"
 
+class Activities(models.Model):
+    module = models.ForeignKey(Module, on_delete=models.CASCADE)
+    duration = models.ForeignKey(Duration, on_delete=models.CASCADE)
+    classroom = models.ForeignKey(room, on_delete=models.CASCADE)
+    teacher = models.ForeignKey(TeacherExtra, on_delete=models.CASCADE)
+    group = models.ForeignKey(Group,on_delete=models.CASCADE , null=True)
+    
+    @property
+    def get_name(self):
+        return self.teacher.user.first_name+" "+self.teacher.user.last_name
 
+    @property
+    def get_module(self):
+        return self.module.name+" "+"("+self.module.codeM+")"
     
+    def __str__(self):
+        return f"{self.module} {self.duration} {self.classroom} {self.teacher.user.first_name} {self.teacher.user.last_name} {self.group}"
+
+class Attendance(models.Model):
+    cl = models.ForeignKey(Group, on_delete=models.CASCADE)
+    date = models.DateField()
+    present_status = models.CharField(max_length=10)
+    activity = models.ForeignKey(Activities, on_delete=models.CASCADE, null=True)
+    student = models.ForeignKey(StudentExtra, on_delete=models.CASCADE, null=True)
     
+    @property
+    def get_module(self):
+        return self.activity.module.name+" "+"("+self.activity.module.codeM+")"
+
+    @property
+    def get_duration(self):
+        start_time_str = self.activity.duration.start_time.strftime('%H:%M:%S')
+        end_time_str = self.activity.duration.end_time.strftime('%H:%M:%S')
+        return str(self.activity.duration.name) + " [" + start_time_str + " " + end_time_str + "]"

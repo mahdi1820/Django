@@ -7,7 +7,8 @@ from . import forms,models
 from django.db.models import Sum 
 from django.core.mail import send_mail
 from datetime import datetime
-from .forms import TeacherUserForm ,TeacherExtraForm,DurationForm
+from django.core.exceptions import ValidationError
+from .forms import TeacherUserForm ,TeacherExtraForm,DurationForm,Activities
 # Create your views here.
 
 @login_required(login_url = 'login')
@@ -84,16 +85,20 @@ def afterlogin_view(request):
 def admin_dashboard_view(request):
     teachercount=models.TeacherExtra.objects.all().filter(status=True).count()
     
-
     studentcount=models.StudentExtra.objects.all().filter(status=True).count()
-    
 
     groupcount = models.Group.objects.all().count()
 
     roomcount = models.room.objects.all().count()
 
     admincount = models.AdminExtra.objects.all().filter(status=True).count()
-  
+
+    modulecount = models.Module.objects.all().count()
+
+    dayswork = models.Days.objects.all().count()
+
+    activity = models.Activities.objects.all().count()
+
     notice=models.Notice.objects.all()
 
     #aggregate function return dictionary so fetch data from dictionay
@@ -107,6 +112,12 @@ def admin_dashboard_view(request):
         'roomcount':roomcount,
 
         'admincount':admincount,
+
+        'modulecount':modulecount,
+
+        'dayswork':dayswork,
+
+        'activity':activity,
 
         'notice':notice
     }
@@ -343,39 +354,56 @@ def admin_attendance_view(request):
 def admin_take_attendance_view(request, lv):
     group = models.Group.objects.get(name=lv)
     students = models.StudentExtra.objects.filter(cl=group)
-    aform=forms.AttendanceForm()
-    if request.method=='POST':
-        form=forms.AttendanceForm(request.POST)
-        if form.is_valid():
-            Attendances=request.POST.getlist('present_status')
-            date=form.cleaned_data['date']
-            for i in range(len(Attendances)):
-                AttendanceModel=models.Attendance()
-                AttendanceModel.cl=group
-                AttendanceModel.date=date
-                AttendanceModel.present_status=Attendances[i]
-                AttendanceModel.save()
-            return redirect('admin-attendance')
-        else:
-            print('form invalid')
-    return render(request,'school/admin_take_attendance.html',{'students':students,'aform':aform})
+    activities = models.Activities.objects.filter(group=group).select_related('module', 'duration')
+    attendance_data = []
+
+    if request.method == 'POST':
+        date = request.POST.get('date')
+        for student in students:
+            present_status = request.POST.get(f'student_{student.id}', 'absent')
+            for activity in activities:
+                attendance_data.append(models.Attendance(
+                    cl=group,
+                    date=date,
+                    present_status=present_status,
+                    student=student,
+                    activity=activity
+                ))
+        models.Attendance.objects.bulk_create(attendance_data)
+        return redirect('admin-attendance')
+
+    context = {
+        'students': students,
+        'group': group,
+        'activities': activities,
+    }
+    return render(request, 'school/admin_take_attendance.html', context)
+
 
 @login_required(login_url="login")
 @user_passes_test(is_admin)
 def admin_view_attendance_view(request, cl):
     group = models.Group.objects.get(name=cl)
-    form = forms.AskDateForm()
+    students = models.StudentExtra.objects.filter(cl=group)
+    activities = models.Activities.objects.filter(group=group).select_related('module', 'duration')
+
     if request.method == 'POST':
-        form = forms.AskDateForm(request.POST)
-        if form.is_valid():
-            date = form.cleaned_data['date']
-            attendancedata = models.Attendance.objects.filter(date=date, cl=group)
-            studentdata = models.StudentExtra.objects.filter(cl=group)
-            mylist = zip(attendancedata, studentdata)
-            return render(request, 'school/admin_view_attendance_page.html', {'cl': cl, 'mylist': mylist, 'date': date})
-        else:
-            print('form invalid')
-    return render(request, 'school/admin_view_attendance_ask_date.html', {'cl': cl, 'form': form})
+        date = request.POST.get('date')
+        attendancedata = models.Attendance.objects.filter(date=date, cl=group)
+        mylist = []
+        for student in students:
+            student_attendance = attendancedata.filter(student=student).first()
+            mylist.append((student, student_attendance))
+        return render(request, 'school/admin_view_attendance_page.html', {'cl':cl, 'mylist': mylist, 'date': date})
+
+    form = forms.AskDateForm()
+    context = {
+        'students': students,
+        'group': group,
+        'activities': activities,
+        'form': form,
+    }
+    return render(request, 'school/admin_view_attendance_ask_date.html', context)
 
 #group related view by adminnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn
 
@@ -483,6 +511,7 @@ def admin_duration_module(request):
 @user_passes_test(is_admin)
 def admin_add_day_view(request):
     form=forms.Days()
+    
     if request.method=='POST':
         form=forms.Days(request.POST)
         if  form.is_valid():
@@ -608,52 +637,61 @@ def delete_duration_from_University_view(request,pk):
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 @login_required(login_url="login")
 @user_passes_test(is_admin)
 def admin_Activities(request):
     return render(request, 'school/admin-Activities.html')
 
+@login_required(login_url="login")
+@user_passes_test(is_admin)
+def admin_add_Activities_view(request):
+    form = Activities()
+    if request.method == 'POST':
+        form = Activities(request.POST)
+        if form.is_valid():
+            activity = form.save(commit=False)
+            conflicting_activities = models.Activities.objects.filter(
+                duration=activity.duration,
+                classroom=activity.classroom,
+                teacher=activity.teacher,
+                group=activity.group,
+                module=activity.module,
+                
+            )
+            if conflicting_activities.exists():
+                msg = 'An activity with the selected duration, classroom, teacher, group, and module already exists and is registered.'
+                form.add_error(None, msg)
+            else:
+                activity.save()
+                return HttpResponseRedirect('admin-add-Activities')
+    return render(request, 'school/admin_add_Activities.html', {'form': form})
 
+@login_required(login_url="login")
+@user_passes_test(is_admin)
+def admin_view_Activities_view(request):
+    Activities = models.Activities.objects.all()
+    return render(request,'school/admin_view_Activities.html',{'Activities':Activities})
 
+@login_required(login_url="login")
+@user_passes_test(is_admin)
+def update_Activities_view(request,pk):
+    Activities = models.Activities.objects.get(id=pk)
+    form=forms.Activities(instance=Activities)
+    mydict={'form':form}
+    if request.method=='POST':
+        form=forms.Activities(request.POST,instance=Activities)
+        if  form.is_valid():
+            Activities=form.save()
+            Activities.save()
+            return redirect('admin-view-Activities')
+    return render(request,'school/admin_update_Activities.html',context=mydict)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+@login_required(login_url="login")
+@user_passes_test(is_admin)
+def delete_Activities_from_University_view(request,pk):
+    Activities=models.Activities.objects.get(id=pk)
+    Activities.delete()
+    return redirect('admin-view-Activities')
 
 
 @login_required(login_url="login")
@@ -699,6 +737,12 @@ def teacher_view_mygroup_view(request):
     groups = teacher.groups.all()
     return render(request,'school/teacher_view_mygroup.html',{'groups':groups})
 
+@login_required(login_url="login")
+@user_passes_test(is_teacher)
+def teacher_view_myactivity_view(request):
+    teacher = models.TeacherExtra.objects.get(user=request.user)
+    activity = models.Activities.objects.filter(teacher=teacher)
+    return render(request, 'school/teacher_view_myactivity.html', {'activity': activity})
 
 @login_required(login_url="login")
 @user_passes_test(is_teacher)
@@ -713,40 +757,55 @@ def teacher_attendance_view(request):
 def teacher_take_attendance_view(request,lv):
     group = models.Group.objects.get(name=lv)
     students = models.StudentExtra.objects.filter(cl=group)
-    aform=forms.AttendanceForm()
-    if request.method=='POST':
-        form=forms.AttendanceForm(request.POST)
-        if form.is_valid():
-            Attendances=request.POST.getlist('present_status')
-            date=form.cleaned_data['date']
-            for i in range(len(Attendances)):
-                AttendanceModel=models.Attendance()
-                AttendanceModel.cl=group
-                AttendanceModel.date=date
-                AttendanceModel.present_status=Attendances[i]
-                AttendanceModel.save()
-            return redirect('teacher-attendance')
-        else:
-            print('form invalid')
-    return render(request,'school/teacher_take_attendance.html',{'students':students,'aform':aform})
+    activities = models.Activities.objects.filter(group=group).select_related('module', 'duration')
+    attendance_data = []
 
+    if request.method == 'POST':
+        date = request.POST.get('date')
+        for student in students:
+            present_status = request.POST.get(f'student_{student.id}', 'absent')
+            for activity in activities:
+                attendance_data.append(models.Attendance(
+                    cl=group,
+                    date=date,
+                    present_status=present_status,
+                    student=student,
+                    activity=activity
+                ))
+        models.Attendance.objects.bulk_create(attendance_data)
+        return redirect('teacher-attendance')
+
+    context = {
+        'students': students,
+        'group': group,
+        'activities': activities,
+    }
+    return render(request, 'school/teacher_take_attendance.html', context)
 
 
 @login_required(login_url="login")
 @user_passes_test(is_teacher)
 def teacher_view_attendance_view(request,cl):
     group = models.Group.objects.get(name=cl)
-    form = forms.AskDateForm()
+    students = models.StudentExtra.objects.filter(cl=group)
+    activities = models.Activities.objects.filter(group=group).select_related('module', 'duration')
+
     if request.method == 'POST':
-        form = forms.AskDateForm(request.POST)
-        if form.is_valid():
-            date = form.cleaned_data['date']
-            attendancedata = models.Attendance.objects.filter(date=date, cl=group)
-            studentdata = models.StudentExtra.objects.filter(cl=group)
-            mylist = zip(attendancedata, studentdata)
-            return render(request, 'school/teacher_view_attendance_page.html', {'cl': cl, 'mylist': mylist, 'date': date})
-        else:
-            print('form invalid')
+        date = request.POST.get('date')
+        attendancedata = models.Attendance.objects.filter(date=date, cl=group)
+        mylist = []
+        for student in students:
+            student_attendance = attendancedata.filter(student=student).first()
+            mylist.append((student, student_attendance))
+        return render(request, 'school/teacher_view_attendance_page.html', {'cl':cl, 'mylist': mylist, 'date': date})
+
+    form = forms.AskDateForm()
+    context = {
+        'students': students,
+        'group': group,
+        'activities': activities,
+        'form': form,
+    }
     return render(request, 'school/teacher_view_attendance_ask_date.html', {'cl': cl, 'form': form})
 
 
@@ -764,12 +823,6 @@ def teacher_notice_view(request):
         else:
             print('form invalid')
     return render(request,'school/teacher_notice.html',{'form':form})
-
-
-
-
-
-
 
 #FOR STUDENT AFTER THEIR Loginnnnnnnnnnnnnnnnnnnnn
 
@@ -791,19 +844,17 @@ def student_dashboard_view(request):
 @user_passes_test(is_student)
 def student_attendance_view(request):
     form = forms.AskDateForm()
-    studentdata = None  # assign None initially
     if request.method == 'POST':
         form = forms.AskDateForm(request.POST)
         if form.is_valid():
             date = form.cleaned_data['date']
-            studentdata = models.StudentExtra.objects.all().filter(user_id=request.user.id).first()
-            if studentdata is None:
-                # handle case where studentdata is not found
-                pass
-            else:
-                attendancedata = models.Attendance.objects.all().filter(date=date, cl=studentdata.cl)
-                mylist = zip(attendancedata, [studentdata])
-                return render(request, 'school/student_view_attendance_page.html', {'mylist': mylist, 'date': date})
-        else:
-            print('form invalid')
+            student = models.StudentExtra.objects.filter(user=request.user).first()
+            if student is not None:
+                attendance_data = models.Attendance.objects.filter(date=date, student=student)
+                mylist = []
+                for activity in models.Activities.objects.filter(group=student.cl):
+                    attendance_status = attendance_data.filter(activity=activity).first()
+                    mylist.append((activity, attendance_status))
+                return render(request, 'school/student_view_attendance_page.html', {'mylist': mylist, 'date': date, 'student': student})
     return render(request, 'school/student_view_attendance_ask_date.html', {'form': form})
+
