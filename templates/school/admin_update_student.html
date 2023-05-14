@@ -48,7 +48,6 @@
 
 </head>
 
-<!------ student update page by admin(sumit)  ---------->
 <form method="post">
   {% csrf_token %}
   <div class="container register-form">
@@ -69,7 +68,7 @@
               {% render_field form1.username class="form-control" placeholder="Username" %}
             </div>
             <div class="form-group">
-              {% render_field form1.password class="form-control" placeholder="Password" %}
+              {% render_field form1.password class="form-control" placeholder="Password"  autocomplete="off"%}
             </div>
             
           </div>

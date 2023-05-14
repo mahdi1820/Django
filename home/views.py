@@ -7,7 +7,7 @@ from . import forms,models
 from django.db.models import Sum 
 from django.core.mail import send_mail
 from datetime import datetime
-from django.core.exceptions import ValidationError
+from django.db import IntegrityError
 from .forms import TeacherUserForm ,TeacherExtraForm,DurationForm,Activities
 # Create your views here.
 
@@ -15,15 +15,27 @@ from .forms import TeacherUserForm ,TeacherExtraForm,DurationForm,Activities
 def home(request):
     return render (request,'school/index.html')
 
+
+def is_admin(user):
+    return user.groups.filter(name='ADMIN').exists()
+def is_teacher(user):
+    return user.groups.filter(name='TEACHER').exists()
+def is_student(user):
+    return user.groups.filter(name='STUDENT').exists()
+
 def login(request):
     if request.method == 'POST':
         username = request.POST.get('username')
-        pass1 = request.POST.get('password')
-        
+        pass1 = request.POST.get('password')    
         user = authenticate(request, username = username ,password = pass1)
         if user is not None:
             auth_login(request,user)
-            return redirect('home')
+            if is_admin(request.user):
+                return redirect('home')            
+            elif is_teacher(request.user):
+                return redirect('home')  
+            elif is_student(request.user):
+                return redirect('student-dashboard')
         else:
             messages.error(request,'Invalid username or password . Please try again.')
     return render (request,'school/Alogin.html')
@@ -33,12 +45,7 @@ def Logout(request):
     logout(request)
     return redirect('login')  
 
-def is_admin(user):
-    return user.groups.filter(name='ADMIN').exists()
-def is_teacher(user):
-    return user.groups.filter(name='TEACHER').exists()
-def is_student(user):
-    return user.groups.filter(name='STUDENT').exists()
+
 
 @login_required(login_url = 'login')
 def master(request):
@@ -76,8 +83,7 @@ def afterlogin_view(request):
         return redirect('admin-dashboard')
     elif is_teacher(request.user):
         return redirect('teacher-dashboard')  
-    elif is_student(request.user):
-        return redirect('student-dashboard')
+    
 
 #for dashboard of adminnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn
 
@@ -650,22 +656,11 @@ def admin_add_Activities_view(request):
         form = Activities(request.POST)
         if form.is_valid():
             activity = form.save(commit=False)
-            conflicting_activities = models.Activities.objects.filter(
-                duration=activity.duration,
-                classroom=activity.classroom,
-                teacher=activity.teacher,
-                group=activity.group,
-                module=activity.module,
-                
-            )
-            if conflicting_activities.exists():
-                msg = 'An activity with the selected duration, classroom, teacher, group, and module already exists and is registered.'
-                form.add_error(None, msg)
-            else:
-                activity.save()
-                return HttpResponseRedirect('admin-add-Activities')
+            activity.save()
+            return HttpResponseRedirect('admin-add-Activities')
     return render(request, 'school/admin_add_Activities.html', {'form': form})
 
+    
 @login_required(login_url="login")
 @user_passes_test(is_admin)
 def admin_view_Activities_view(request):
@@ -685,6 +680,8 @@ def update_Activities_view(request,pk):
             Activities.save()
             return redirect('admin-view-Activities')
     return render(request,'school/admin_update_Activities.html',context=mydict)
+
+
 
 @login_required(login_url="login")
 @user_passes_test(is_admin)

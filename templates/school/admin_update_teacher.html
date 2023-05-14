@@ -78,7 +78,7 @@
               {% render_field form1.last_name class="form-control" placeholder="Last Name" %}
             </div>
             <div class="form-group">
-              {% render_field form1.password class="form-control" placeholder="Password" %}
+              {% render_field form1.password class="form-control" placeholder="Password" autocomplete="off" %}
             </div>
             <div class="form-group">
               {% for checkbox in form2.groups %}

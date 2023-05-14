@@ -114,35 +114,55 @@ class Activities(forms.ModelForm):
         teacher = cleaned_data.get('teacher')
         module = cleaned_data.get('module')
         group = cleaned_data.get('group')
-        if duration and classroom and teacher and group and module:
+        if duration and teacher :
             conflicting_activities = models.Activities.objects.filter(
                 duration=duration,
-                classroom=classroom,
                 teacher=teacher,
-                group=group,
-                module=module,
             ).exclude(pk=self.instance.pk if self.instance else None)
             if conflicting_activities.exists():
-                msg = 'An activity with the selected duration, classroom, teacher, group, and module already exists.'
+                msg = "An activity with the name  already exists."
+                raise ValidationError(msg)
+        elif classroom and duration and group:
+            conflicting_activities = models.Activities.objects.filter(
+                classroom=classroom,
+                duration=duration,
+                group=group,
+            ).exclude(pk=self.instance.pk if self.instance else None)
+            if conflicting_activities.exists():
+                msg = "An activity with the name  already exists."
                 raise ValidationError(msg)
 
         return cleaned_data
 
     def save(self, commit=True):
-            # Get the instance of the model being edited
-            instance = super().save(commit=False)
-            
-            # Set the values of the fields
-            instance.name = self.cleaned_data['module']
-            instance.duration = self.cleaned_data['duration']
-            instance.classroom = self.cleaned_data['classroom']
-            instance.teacher = self.cleaned_data['teacher']
-            instance.group = self.cleaned_data['group']
-            
-            # Save the instance to the database
-            if commit:
-                instance.save()
-            return instance
+        # Get the instance of the model being edited
+        instance = super().save(commit=False)
+
+        # Set the values of the fields
+        instance.module = self.cleaned_data['module']
+        instance.duration = self.cleaned_data['duration']
+        instance.classroom = self.cleaned_data['classroom']
+        instance.teacher = self.cleaned_data['teacher']
+        instance.group = self.cleaned_data['group']
+
+        # Check if there is already an activity with the selected duration, classroom, teacher, group, and module
+        conflicting_activities = models.Activities.objects.filter(
+            duration=instance.duration,
+            classroom=instance.classroom,
+            teacher=instance.teacher,
+            group=instance.group,
+            module=instance.module,
+        ).exclude(pk=instance.pk if instance.pk else None)
+
+        if conflicting_activities.exists():
+            # Do not save the instance if a conflicting activity already exists
+            return None
+
+        # Save the instance to the database
+        if commit:
+            instance.save()
+        return instance
+
 
 
 

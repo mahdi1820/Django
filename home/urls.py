@@ -1,5 +1,6 @@
 from django.urls import path 
 
+
 from . import views
 
 
@@ -73,7 +74,6 @@ urlpatterns = [
     path('admin-view-Activities', views.admin_view_Activities_view,name='admin-view-Activities'),
     path('delete-Activities-from-University/<int:pk>', views.delete_Activities_from_University_view,name='delete-Activities-from-University'),
     path('update-Activities/<int:pk>', views.update_Activities_view,name='update-Activities'),
-
 
     path('admin-notice', views.admin_notice_view,name='admin-notice'),
 
