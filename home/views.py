@@ -373,7 +373,7 @@ def admin_take_attendance_view(request, lv):
                     date=date,
                     present_status=present_status,
                     student=student,
-                    activity=activity
+                    activity=activity,
                 ))
         models.Attendance.objects.bulk_create(attendance_data)
         return redirect('admin-attendance')

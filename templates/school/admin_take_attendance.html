@@ -46,31 +46,32 @@
             </thead>
             <tbody>
               {% for student in students %}
-              <tr>
-                <td>{{ student.get_name }}</td>
-                <td>
-                  <select name="module_{{ student.id }}">
-                    {% for activity in activities %}
-                      <option value="{{ activity.id }}">{{ activity.module.name }} ({{ activity.module.codeM }}) </option>
-                    {% endfor %}
-                  </select>
-                </td>
-                <td>
-                  <select name="duration_{{ student.id }}">
-                    {% for activity in activities %}
-                      <option value="{{ activity.id }}">{{ activity.duration.name }} [{{ activity.duration.start_time }} {{ activity.duration.end_time }}]</option>
-                    {% endfor %}
-                  </select>
-                </td>
-                <td>
-                  <select name="attendance_{{ student.id }}">
-                    <option value="present">Present</option>
-                    <option value="absent" selected>Absent</option>
-                  </select>
-                </td>
-              </tr>
+                  <tr>
+                      <td>{{ student.get_name }}</td>
+                      <td>
+                          <select name="activity_{{ student.id }}">
+                              {% for activity in activities %}
+                                  <option value="{{ activity.id }}">{{ activity.module.name }} ({{ activity.module.codeM }})</option>
+                              {% endfor %}
+                          </select>
+                      </td>
+                      <td>
+                          <select name="duration_{{ student.id }}">
+                              {% for activity in activities %}
+                                  <option value="{{ activity.duration.id }}">{{ activity.duration.name }} [{{ activity.duration.start_time }} {{ activity.duration.end_time }}]</option>
+                              {% endfor %}
+                          </select>
+                      </td>
+                      <td>
+                          <select name="attendance_{{ student.id }}">
+                              <option value="present">Present</option>
+                              <option value="absent" selected>Absent</option>
+                          </select>
+                      </td>
+                  </tr>
               {% endfor %}
-            </tbody>
+          </tbody>
+          
           </table>
         </div>
         <input type="date" name="date" class="form-control" placeholder="Enter Date dd/mm/yyyy">
