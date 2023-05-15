@@ -14,11 +14,13 @@
     a:link {
       text-decoration: none;
     }
-    h6{
-      text-align:center;
+    h6 {
+      text-align: center;
     }
-    .row{
-      margin:100px;
+    .table-container {
+      margin: 100px auto; /* Center the table horizontally */
+      max-width: 800px; /* Set a maximum width for the table */
+      overflow-x: auto; /* Add horizontal scroll if necessary */
     }
   </style>
 
@@ -26,36 +28,32 @@
 
 
 <div class="container">
-
-    	<div class="row" >
-
-				<div class="panel panel-primary">
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="panel panel-primary">
 					<div class="panel-heading">
 						<h6 class="panel-title">Groups</h6>
-
 					</div>
-
 					<table class="table table-hover table-striped table-bordered" id="dev-table">
-                        <thead>
-                            <tr>
-                                <th>Group</th>
-                                <th>Level</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for group in groups %}
-                                <tr>
-                                    <td>{{ group.name }}</td>
-                                    <td>{{ group.level }}</td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-				</div>
-
-
-				</div>
-			</div>
+            <thead>
+              <tr>
+                <th>Group</th>
+                <th>Level</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for group in groups %}
+                <tr>
+                  <td>{{ group.name }}</td>
+                  <td>{{ group.level }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
 
 
 

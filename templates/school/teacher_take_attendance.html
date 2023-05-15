@@ -1,13 +1,12 @@
 {% extends 'school/teacherbase.html' %}
+
 {% load widget_tweaks %}
+
 {% block content %}
-
 <head>
-
   <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
   <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
   <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-
   <style media="screen">
     a:link {
       text-decoration: none;
@@ -25,56 +24,59 @@
       text-align: center;
     }
   </style>
-
 </head>
 
-<form class="" method="post">
+<form method="post">
+  {% csrf_token %}
   <div class="container">
     <div class="row">
       <div class="panel panel-primary">
         <div class="panel-heading">
           <h6 class="panel-title">Attendance</h6>
         </div>
-        <table class="table table-hover table-striped table-bordered" id="dev-table">
-          <thead>
-            <tr>
-              <th>Student</th>
-              <th>Module</th>
-              <th>Duration</th>
-              <th>Present/Absent</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% csrf_token %}
-            {% for student in students %}
-                <tr>
-                  <td>{{ student.get_name }}</td>
-                  <td>
-                    <select name="activities">
-                      {% for activities in activities %}
-                        <option value="{{ activities.id }}">{{ activities.module.name }} ({{ activities.module.codeM }}) </option>
-                      {% endfor %}
-                    </select>
-                  </td>
-                  <td>
-                    <select name="activities">
-                      {% for activities in activities %}
-                        <option value="{{ activities.id }}">{{ activities.duration.name }} [{{ activities.duration.start_time}} {{ activities.duration.end_time}}]</option>
-                      {% endfor %}
-                    </select>
-                  </td>
-                  <td>
-                    <select name="student_{{ student.id }}">
-                      <option value="present">Present</option>
-                      <option value="absent" selected>Absent</option>
-                    </select>
-                  </td>
-                </tr>
-            {% endfor %}
-          </tbody>
-        </table>
+        <div class="table-responsive"> <!-- Add responsive class to the parent div -->
+          <table class="table table-hover table-striped table-bordered" id="dev-table">
+            <thead>
+              <tr>
+                <th>Student</th>
+                <th>Module</th>
+                <th>Duration</th>
+                <th>Present/Absent</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for student in students %}
+              <tr>
+                <td>{{ student.get_name }}</td>
+                <td>
+                  <select name="module_{{ student.id }}">
+                    {% for activity in activities %}
+                      <option value="{{ activity.id }}">{{ activity.module.name }} ({{ activity.module.codeM }}) </option>
+                    {% endfor %}
+                  </select>
+                </td>
+                <td>
+                  <select name="duration_{{ student.id }}">
+                    {% for activity in activities %}
+                      <option value="{{ activity.id }}">{{ activity.duration.name }} [{{ activity.duration.start_time }} {{ activity.duration.end_time }}]</option>
+                    {% endfor %}
+                  </select>
+                </td>
+                <td>
+                  <select name="attendance_{{ student.id }}">
+                    <option value="present">Present</option>
+                    <option value="absent" selected>Absent</option>
+                  </select>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
         <input type="date" name="date" class="form-control" placeholder="Enter Date dd/mm/yyyy">
-        <input type="submit" style="margin-left: 50px; margin-top: 20px; margin-bottom: 20px;" name="submit" class="btn btn-success" value="Submit Attendance">
+        <div class="btnSubmit">
+          <input type="submit" style="margin-top: 20px; margin-bottom: 20px;" name="submit" class="btn btn-success" value="Submit Attendance">
+        </div>
       </div>
     </div>
   </div>

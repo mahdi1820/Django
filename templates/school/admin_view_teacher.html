@@ -1,11 +1,7 @@
 {% extends 'school/adminbase.html' %}
 
-
-
 {% block content %}
-
 <head>
-
   <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
   <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
   <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
@@ -14,72 +10,67 @@
     a:link {
       text-decoration: none;
     }
-    h6{
-      text-align:center;
+    h6 {
+      text-align: center;
     }
-    .row{
-      margin:100px;
+    .table-container {
+      margin: 100px auto; /* Center the table horizontally */
+      max-width: 800px; /* Set a maximum width for the table */
+      overflow-x: auto;
+      overflow-y: auto; /* Add horizontal scroll if necessary */
     }
   </style>
 
 </head>
 
 <div class="container">
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <h6 class="panel-title">Teachers</h6>
+        </div>
 
-    	<div class="row" >
-
-				<div class="panel panel-primary">
-					<div class="panel-heading">
-						<h6 class="panel-title">Teachers</h6>
-
-					</div>
-          <table class="table table-hover table-striped table-bordered" id="dev-table">
+        <div class="table-container">
+          <table class="table table-responsive table-hover table-striped table-bordered" id="dev-table">
             <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Contact</th>
-                    <th>Groups</th>
-                    <th>Joining Date</th>
-                    <th>Actions</th>
-                </tr>
+              <tr>
+                <th>Name</th>
+                <th>Contact</th>
+                <th>Groups</th>
+                <th>Joining Date</th>
+                <th>Actions</th>
+              </tr>
             </thead>
             <tbody>
-                {% for t in teachers %}
-                    <tr>
-                        <td>{{ t.get_name }}</td>
-                        <td>{{ t.mobile }}</td>
-                        <td>
-                            {% for group in t.groups.all %}
-                                {{ group.name }}{% if not forloop.last %}, {% endif %}
-                            {% empty %}
-                                No groups
-                            {% endfor %}
-                        </td>
-                        <td>{{ t.joindate }}</td>
-                        <td>
-                            <a class="btn btn-primary btn-xs" href="{% url 'update-teacher' t.id %}">
-                                <span class="glyphicon glyphicon-edit"></span>
-                            </a>
-                            <a class="btn btn-danger btn-xs" href="{% url 'delete-teacher-from-University' t.id %}">
-                                <span class="glyphicon glyphicon-trash"></span>
-                            </a>
-                        </td>
-                    </tr>
-                {% endfor %}
+              {% for t in teachers %}
+              <tr>
+                <td>{{ t.get_name }}</td>
+                <td>{{ t.mobile }}</td>
+                <td>
+                  {% for group in t.groups.all %}
+                  {{ group.name }}{% if not forloop.last %}, {% endif %}
+                  {% empty %}
+                  No groups
+                  {% endfor %}
+                </td>
+                <td>{{ t.joindate }}</td>
+                <td>
+                  <a class="btn btn-primary btn-xs" href="{% url 'update-teacher' t.id %}">
+                    <span class="glyphicon glyphicon-edit"></span>
+                  </a>
+                  <a class="btn btn-danger btn-xs" href="{% url 'delete-teacher-from-University' t.id %}">
+                    <span class="glyphicon glyphicon-trash"></span>
+                  </a>
+                </td>
+              </tr>
+              {% endfor %}
             </tbody>
-        </table>
-        
-        
-        
-        
-				</div>
-
-
-				</div>
-			</div>
-
-
-
-
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 {% endblock content %}

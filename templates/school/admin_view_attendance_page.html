@@ -1,15 +1,10 @@
 {% extends 'school/adminbase.html' %}
 
-
-
 {% block content %}
-
 <head>
-
   <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
   <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
   <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-
   <style media="screen">
     a:link {
       text-decoration: none;
@@ -19,41 +14,46 @@
       text-align: center;
     }
 
-    .row {
-      margin: 100px;
+    .table-container {
+      margin: 100px auto;
+      max-width: 800px;
+      overflow-x: auto;
     }
   </style>
-
 </head>
 <div class="container">
   <div class="row">
-    <div class="panel panel-primary">
-      <div class="panel-heading">
-        <h6 class="panel-title">Attendance of class {{cl}} and date {{date}}</h6>
+    <div class="col-xs-12">
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <h6 class="panel-title">Attendance of class {{ cl }} on {{ date }}</h6>
+        </div>
+        <div class="table-container">
+          <table class="table table-responsive table-hover table-striped table-bordered" id="dev-table">
+            <thead>
+              <tr>
+                <th>Student Name</th>
+                <th>Student Group</th>
+                <th>Module</th>
+                <th>Duration</th>
+                <th>Present/Absent</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for student, attendance in mylist %}
+              <tr>
+                <td>{{ student.get_name }}</td>
+                <td>{{ student.cl }}</td>
+                <td>{{ attendance.get_module }}</td>
+                <td>{{ attendance.get_duration }}</td>
+                <td>{{ attendance.present_status }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
       </div>
-      <table class="table table-hover table-striped table-bordered" id="dev-table">
-        <thead>
-          <tr>
-            <th>Student Name</th>
-            <th>Student Group</th>
-            <th>Module</th>
-            <th>Duration</th>
-            <th>Present/Absent</th>
-          </tr>
-        </thead>
-        {%for student, attendance in mylist %}
-        <tr>
-          <td>{{student.get_name}}</td>
-          <td>{{student.cl}}</td>
-          <td>{{ attendance.get_module }}</td>
-          <td>{{ attendance.get_duration }}</td>
-          <td>{{attendance.present_status}}</td>
-        </tr>
-        {%endfor%}
-      </table>
     </div>
   </div>
 </div>
-
-
 {% endblock content %}
