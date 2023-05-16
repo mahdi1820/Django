@@ -89,5 +89,7 @@ urlpatterns = [
 
     path('student-dashboard', views.student_dashboard_view,name='student-dashboard'),
     path('student-attendance', views.student_attendance_view,name='student-attendance'),
+    path('student-activity', views.student_activity_view,name='student-activity'),
+
 
 ]

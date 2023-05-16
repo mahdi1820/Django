@@ -855,3 +855,10 @@ def student_attendance_view(request):
                 return render(request, 'school/student_view_attendance_page.html', {'mylist': mylist, 'date': date, 'student': student})
     return render(request, 'school/student_view_attendance_ask_date.html', {'form': form})
 
+@login_required(login_url="login")
+@user_passes_test(is_student)
+def student_activity_view(request):
+    student = models.StudentExtra.objects.get(user=request.user)
+    group = student.cl
+    activity = models.Activities.objects.filter(group=group)
+    return render(request, 'school/student-activity.html', {'activity': activity})

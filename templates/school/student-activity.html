@@ -1,7 +1,7 @@
-{% extends 'school/teacherbase.html' %}
+{% extends 'school/studentbase.html' %}
 
 {% block content %}
-
+<br><br>
 <head>
   <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
   <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
@@ -20,37 +20,38 @@
       overflow-x: auto; /* Add horizontal scroll if necessary */
     }
   </style>
+
 </head>
-<d class="container">
+
+<div class="container">
   <div class="row">
     <div class="col-xs-12">
       <div class="panel panel-primary">
         <div class="panel-heading">
           <h6 class="panel-title">Activity</h6>
         </div>
+
         <div class="table-container">
-          <div class="table-responsive">
             <table class="table table-hover table-striped table-bordered" id="dev-table">
-              <thead>
-                <tr>
-                  <th>Module</th>
-                  <th>Group</th>
-                  <th>Duration</th>
-                  <th>Classroom</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for activity in activity %}
+                <thead>
                   <tr>
-                    <td>{{ activity.module }}</td>
-                    <td>{{ activity.group }}</td>
-                    <td>{{ activity.duration }}</td>
-                    <td>{{ activity.classroom }}</td>
+                    <th>Module</th>
+                    <th>Group</th>
+                    <th>Duration</th>
+                    <th>Classroom</th>
                   </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {% for activity in activity %}
+                    <tr>
+                      <td>{{ activity.module }}</td>
+                      <td>{{ activity.group }}</td>
+                      <td>{{ activity.duration }}</td>
+                      <td>{{ activity.classroom }}</td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
         </div>
       </div>
     </div>

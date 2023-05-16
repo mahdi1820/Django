@@ -185,6 +185,8 @@
 
     <a href="/student-dashboard"><i class="fas fa-desktop"></i><span>Dashboard</span></a>
     <a href="{% url 'student-attendance'%}"><i class="fas fa-address-card"></i><span>View Attendance</span></a>
+    <a href="{% url 'student-activity'%}"><i class="fas fa-network-wired"></i><span>View Activity</span></a>
+
 
   </div>
   <!--sidebar end-->
@@ -193,6 +195,7 @@
   <!--content start-->
   <div class="content">
     <br><br><br><br><br>
+    
     {% block content %}
 
     {% endblock content %}    
