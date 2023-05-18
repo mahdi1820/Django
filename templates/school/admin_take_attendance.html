@@ -34,44 +34,35 @@
         <div class="panel-heading">
           <h6 class="panel-title">Attendance</h6>
         </div>
-        <div class="table-responsive"> <!-- Add responsive class to the parent div -->
+        <div class="table-responsive">
           <table class="table table-hover table-striped table-bordered" id="dev-table">
             <thead>
               <tr>
                 <th>Student</th>
-                <th>Module</th>
-                <th>Duration</th>
+                <th>Activity</th>
                 <th>Present/Absent</th>
               </tr>
             </thead>
             <tbody>
               {% for student in students %}
-                  <tr>
-                      <td>{{ student.get_name }}</td>
-                      <td>
-                          <select name="activity_{{ student.id }}">
-                              {% for activity in activities %}
-                                  <option value="{{ activity.id }}">{{ activity.module.name }} ({{ activity.module.codeM }})</option>
-                              {% endfor %}
-                          </select>
-                      </td>
-                      <td>
-                          <select name="duration_{{ student.id }}">
-                              {% for activity in activities %}
-                                  <option value="{{ activity.duration.id }}">{{ activity.duration.name }} [{{ activity.duration.start_time }} {{ activity.duration.end_time }}]</option>
-                              {% endfor %}
-                          </select>
-                      </td>
-                      <td>
-                          <select name="attendance_{{ student.id }}">
-                              <option value="present">Present</option>
-                              <option value="absent" selected>Absent</option>
-                          </select>
-                      </td>
-                  </tr>
+              <tr>
+                <td>{{ student.get_name }}</td>
+                <td>
+                  <select name="activity_{{ student.id }}">
+                    {% for activity in activities %}
+                    <option value="{{ activity.id }}">{{ activity.module.name }} ({{ activity.module.codeM }}) - {{ activity.duration.name }} [{{ activity.duration.start_time }} - {{ activity.duration.end_time }}]</option>
+                    {% endfor %}
+                  </select>
+                </td>
+                <td>
+                  <select name="attendance_{{ student.id }}">
+                    <option value="present">Present</option>
+                    <option value="absent">Absent</option>
+                  </select>
+                </td>
+              </tr>
               {% endfor %}
-          </tbody>
-          
+            </tbody>
           </table>
         </div>
         <input type="date" name="date" class="form-control" placeholder="Enter Date dd/mm/yyyy">

@@ -361,28 +361,35 @@ def admin_take_attendance_view(request, lv):
     group = models.Group.objects.get(name=lv)
     students = models.StudentExtra.objects.filter(cl=group)
     activities = models.Activities.objects.filter(group=group).select_related('module', 'duration')
-    attendance_data = []
-
+    
     if request.method == 'POST':
         date = request.POST.get('date')
+        attendance_data = []
+        
         for student in students:
-            present_status = request.POST.get(f'student_{student.id}', 'absent')
-            for activity in activities:
-                attendance_data.append(models.Attendance(
-                    cl=group,
-                    date=date,
-                    present_status=present_status,
-                    student=student,
-                    activity=activity,
-                ))
+            activity_id = request.POST.get(f'activity_{student.id}')
+            present_status = request.POST.get(f'attendance_{student.id}', 'absent')
+            
+            # Retrieve the activity object for the current student
+            activity = activities.get(id=activity_id)
+            
+            attendance_data.append(models.Attendance(
+                cl=group,
+                date=date,
+                present_status=present_status,
+                student=student,
+                activity=activity,
+            ))
+        
         models.Attendance.objects.bulk_create(attendance_data)
         return redirect('admin-attendance')
-
+    
     context = {
         'students': students,
         'group': group,
         'activities': activities,
     }
+    
     return render(request, 'school/admin_take_attendance.html', context)
 
 
@@ -395,12 +402,13 @@ def admin_view_attendance_view(request, cl):
 
     if request.method == 'POST':
         date = request.POST.get('date')
-        attendancedata = models.Attendance.objects.filter(date=date, cl=group)
-        mylist = []
-        for student in students:
-            student_attendance = attendancedata.filter(student=student).first()
-            mylist.append((student, student_attendance))
-        return render(request, 'school/admin_view_attendance_page.html', {'cl':cl, 'mylist': mylist, 'date': date})
+        attendance_data = models.Attendance.objects.filter(date=date, cl=group)
+        context = {
+            'group': group,
+            'date': date,
+            'attendance_data': attendance_data,
+        }
+        return render(request, 'school/admin_view_attendance_page.html', context)
 
     form = forms.AskDateForm()
     context = {
@@ -410,7 +418,6 @@ def admin_view_attendance_view(request, cl):
         'form': form,
     }
     return render(request, 'school/admin_view_attendance_ask_date.html', context)
-
 #group related view by adminnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn
 
 @login_required(login_url="login")
@@ -751,24 +758,29 @@ def teacher_attendance_view(request):
 
 @login_required(login_url="login")
 @user_passes_test(is_teacher)
-def teacher_take_attendance_view(request,lv):
+def teacher_take_attendance_view(request, lv):
     group = models.Group.objects.get(name=lv)
     students = models.StudentExtra.objects.filter(cl=group)
     activities = models.Activities.objects.filter(group=group).select_related('module', 'duration')
-    attendance_data = []
 
     if request.method == 'POST':
         date = request.POST.get('date')
+        attendance_data = []
+
         for student in students:
+            activity_id = request.POST.get(f'activity_{student.id}')
             present_status = request.POST.get(f'student_{student.id}', 'absent')
-            for activity in activities:
-                attendance_data.append(models.Attendance(
-                    cl=group,
-                    date=date,
-                    present_status=present_status,
-                    student=student,
-                    activity=activity
-                ))
+
+            activity = activities.get(id=activity_id)
+
+            attendance_data.append(models.Attendance(
+                cl=group,
+                date=date,
+                present_status=present_status,
+                student=student,
+                activity=activity,
+            ))
+
         models.Attendance.objects.bulk_create(attendance_data)
         return redirect('teacher-attendance')
 
@@ -779,22 +791,22 @@ def teacher_take_attendance_view(request,lv):
     }
     return render(request, 'school/teacher_take_attendance.html', context)
 
-
 @login_required(login_url="login")
 @user_passes_test(is_teacher)
-def teacher_view_attendance_view(request,cl):
+def teacher_view_attendance_view(request, cl):
     group = models.Group.objects.get(name=cl)
     students = models.StudentExtra.objects.filter(cl=group)
     activities = models.Activities.objects.filter(group=group).select_related('module', 'duration')
 
     if request.method == 'POST':
         date = request.POST.get('date')
-        attendancedata = models.Attendance.objects.filter(date=date, cl=group)
-        mylist = []
-        for student in students:
-            student_attendance = attendancedata.filter(student=student).first()
-            mylist.append((student, student_attendance))
-        return render(request, 'school/teacher_view_attendance_page.html', {'cl':cl, 'mylist': mylist, 'date': date})
+        attendance_data = models.Attendance.objects.filter(date=date, cl=group)
+        context = {
+            'group': group,
+            'date': date,
+            'attendance_data': attendance_data,
+        }
+        return render(request, 'school/teacher_view_attendance_page.html', context)
 
     form = forms.AskDateForm()
     context = {
@@ -803,8 +815,7 @@ def teacher_view_attendance_view(request,cl):
         'activities': activities,
         'form': form,
     }
-    return render(request, 'school/teacher_view_attendance_ask_date.html', {'cl': cl, 'form': form})
-
+    return render(request, 'school/teacher_view_attendance_ask_date.html', context)
 
 @login_required(login_url="login")
 @user_passes_test(is_teacher)

@@ -40,12 +40,12 @@
               </tr>
             </thead>
             <tbody>
-              {% for student, attendance in mylist %}
+              {% for attendance in attendance_data %}
               <tr>
-                <td>{{ student.get_name }}</td>
-                <td>{{ student.cl }}</td>
-                <td>{{ attendance.get_module }}</td>
-                <td>{{ attendance.get_duration }}</td>
+                <td>{{ attendance.student.get_name }}</td>
+                <td>{{ attendance.cl.name }}</td>
+                <td>{{ attendance.activity.module.name }} ({{ attendance.activity.module.codeM }}) </td>
+                <td>{{ attendance.activity.duration.name }} [{{ attendance.activity.duration.start_time }} - {{ attendance.activity.duration.end_time }}]</td>
                 <td>{{ attendance.present_status }}</td>
               </tr>
               {% endfor %}
