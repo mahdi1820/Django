@@ -53,7 +53,7 @@
                                 <option value="{{ activity.id }}">{{ activity.module.name }} ({{ activity.module.codeM }}) - {{ activity.duration.name }} [{{ activity.duration.start_time }} - {{ activity.duration.end_time }}]</option>
                             {% endfor %}
                         </select>
-                    </td>
+                      </td>
                       <td>
                           <select name="student_{{ student.id }}">
                               <option value="present">Present</option>
@@ -62,15 +62,16 @@
                       </td>
                   </tr>
               {% endfor %}
-          </tbody>
+            </tbody>
           </table>
         </div>
         <input type="date" name="date" class="form-control" placeholder="Enter Date dd/mm/yyyy">
         <div class="btnSubmit">
-          <input type="submit" style="margin-top: 20px; margin-bottom: 20px;" name="submit" class="btn btn-success" value="Submit Attendance">
+          <input type="submit" style="margin-top: 10px; margin-bottom: 10px; margin-right: 750px;" name="submit" class="btn btn-success" value="Submit Attendance">
         </div>
       </div>
     </div>
   </div>
 </form>
+
 {% endblock content %}

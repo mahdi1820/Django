@@ -759,9 +759,11 @@ def teacher_attendance_view(request):
 @login_required(login_url="login")
 @user_passes_test(is_teacher)
 def teacher_take_attendance_view(request, lv):
+    teacher = models.TeacherExtra.objects.get(user=request.user)
     group = models.Group.objects.get(name=lv)
     students = models.StudentExtra.objects.filter(cl=group)
-    activities = models.Activities.objects.filter(group=group).select_related('module', 'duration')
+    activities = models.Activities.objects.filter(group=group, teacher=teacher).select_related('module', 'duration')
+
 
     if request.method == 'POST':
         date = request.POST.get('date')
