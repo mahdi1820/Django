@@ -32,16 +32,20 @@ class TeacherUserForm(forms.ModelForm):
     class Meta:
         model=User
         fields=['first_name','last_name','username','password','email']
+
 class TeacherExtraForm(forms.ModelForm):
     groups = forms.ModelMultipleChoiceField(
-        queryset=models.Group.objects.all(), 
-        widget=CheckboxSelectMultiple,
+        queryset=models.Group.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
         required=False
     )
 
+
+
     class Meta:
-        model=models.TeacherExtra
-        fields=['groups','mobile','status']
+        model = models.TeacherExtra
+        fields = ['groups', 'mobile', 'status']
+
 
 
 

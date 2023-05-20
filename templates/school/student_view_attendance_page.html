@@ -46,8 +46,8 @@
         {% if mylist %}
           {% for activity, attendance in mylist %}
             <tr>
-              <td>{{ student.cl }}</td>
-              <td>{{ activity.module }}</td>
+              <td>{{ student.cl }} ({{ activity.group.level }})</td>
+              <td>{{ activity.module }} ({{ activity.module.codeM }})</td>
               <td>{{ attendance.get_duration }}</td>
               <td>{{ attendance.present_status }}</td>
             </tr>

@@ -18,18 +18,40 @@
       max-width: 800px; /* Set a maximum width for the table */
       overflow-x: auto; /* Add horizontal scroll if necessary */
       overflow-y: auto; /* Add horizontal scroll if necessary */
-
     }
   </style>
 
+  <script type="text/javascript">
+    $(document).ready(function() {
+      $('#group-select').change(function() {
+        var selectedGroup = $(this).val();
+        $('.group-row').hide();
+        if (selectedGroup === 'all') {
+          $('.group-row').show();
+        } else {
+          $('.group-row[data-group="' + selectedGroup + '"]').show();
+        }
+      });
+    });
+  </script>
 </head>
-
+<br><br>
 <div class="container">
   <div class="row">
     <div class="col-xs-12">
       <div class="panel panel-primary">
         <div class="panel-heading">
           <h6 class="panel-title">Activities</h6>
+        </div>
+        
+        <div class="table-container">
+          <label for="group-select">Filter by Group:</label>
+          <select class="form-control" id="group-select">
+            <option value="all">All Groups</option>
+            {% for group in groups %}
+            <option value="{{ group.name }}">{{ group.name }} ({{ group.level }})</option>
+            {% endfor %}
+          </select>
         </div>
 
         <div class="table-container">
@@ -46,11 +68,11 @@
             </thead>
             <tbody>
               {% for a in Activities %}
-              <tr>
+              <tr class="group-row" data-group="{{ a.group }}">
                 <td>{{ a.get_module }}</td>
                 <td>{{ a.duration }}</td>
                 <td>{{ a.get_name }}</td>
-                <td>{{ a.group }}</td>
+                <td>{{ a.group }} ({{ a.group.level }})</td>
                 <td>{{ a.classroom }}</td>
                 <td>
                   <a class="btn btn-primary btn-xs" href="{% url 'update-Activities' a.id %}">

@@ -209,13 +209,16 @@ def admin_add_teacher_view(request):
                 for group in selected_groups:
                     teacher_extra.groups.add(group)
 
-                    # Add the user to the selected group and remove from the default "TEACHER" group
-                    group.user_set.add(user)
-                    teacher_group.user_set.remove(user)
+                    # Add the teacher_extra to the selected group
+                    group.teacherextra_set.add(teacher_extra)
 
             return HttpResponseRedirect(reverse('admin-teacher'))
 
+    groups = models.Group.objects.all()
+    mydict['groups'] = groups
+
     return render(request, 'school/admin_add_teacher.html', context=mydict)
+
 
 @login_required(login_url="login")
 @user_passes_test(is_admin)
@@ -309,7 +312,12 @@ def admin_add_student_view(request):
 @user_passes_test(is_admin)
 def admin_view_student_view(request):
     students=models.StudentExtra.objects.all().filter(status=True)
-    return render(request,'school/admin_view_student.html',{'students':students})
+    groups = models.Group.objects.all()
+    context = {
+        'students': students,
+        'groups': groups,
+    }
+    return render(request,'school/admin_view_student.html',context)
 
 
 @login_required(login_url="login")
@@ -672,7 +680,12 @@ def admin_add_Activities_view(request):
 @user_passes_test(is_admin)
 def admin_view_Activities_view(request):
     Activities = models.Activities.objects.all()
-    return render(request,'school/admin_view_Activities.html',{'Activities':Activities})
+    groups = models.Group.objects.all()
+    context = {
+        'Activities': Activities,
+        'groups': groups,
+    }
+    return render(request,'school/admin_view_Activities.html',context)
 
 @login_required(login_url="login")
 @user_passes_test(is_admin)
@@ -745,8 +758,8 @@ def teacher_view_mygroup_view(request):
 @user_passes_test(is_teacher)
 def teacher_view_myactivity_view(request):
     teacher = models.TeacherExtra.objects.get(user=request.user)
-    activity = models.Activities.objects.filter(teacher=teacher)
-    return render(request, 'school/teacher_view_myactivity.html', {'activity': activity})
+    activity = models.Activities.objects.filter(teacher=teacher )
+    return render(request, 'school/teacher_view_myactivity.html',{'activity':activity})
 
 @login_required(login_url="login")
 @user_passes_test(is_teacher)
@@ -873,5 +886,10 @@ def student_attendance_view(request):
 def student_activity_view(request):
     student = models.StudentExtra.objects.get(user=request.user)
     group = student.cl
-    activity = models.Activities.objects.filter(group=group)
-    return render(request, 'school/student-activity.html', {'activity': activity})
+    
+    activities = models.Activities.objects.filter(group=group)
+    
+    teachers = models.TeacherExtra.objects.filter(activities__in=activities).distinct()
+    modules = models.Module.objects.filter(activities__in=activities).distinct()
+    
+    return render(request, 'school/student-activity.html', {'activities': activities, 'teachers': teachers, 'modules': modules})

@@ -43,7 +43,7 @@
               {% for attendance in attendance_data %}
               <tr>
                 <td>{{ attendance.student.get_name }}</td>
-                <td>{{ attendance.cl.name }}</td>
+                <td>{{ attendance.cl.name }} ({{ attendance.cl.level }})</td>
                 <td>{{ attendance.activity.module.name }} ({{ attendance.activity.module.codeM }}) </td>
                 <td>{{ attendance.activity.duration.name }} [{{ attendance.activity.duration.start_time }} - {{ attendance.activity.duration.end_time }}]</td>
                 <td>{{ attendance.present_status }}</td>

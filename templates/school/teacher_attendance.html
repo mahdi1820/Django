@@ -47,7 +47,7 @@
         <tbody>
           {% for group in groups %}
           <tr>
-            <td>{{ group.name }}</td>
+            <td>{{ group.name }} ({{ group.level }})</td>
             <td>
               <a class="btn btn-primary btn-xs" href="{% url 'teacher-take-attendance' group.name %}">
                 <span class="glyphicon glyphicon-plus"></span>

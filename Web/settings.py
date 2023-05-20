@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'home.apps.HomeConfig',
     'widget_tweaks',
     
+    
 ]
 
 MIDDLEWARE = [

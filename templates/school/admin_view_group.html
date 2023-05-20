@@ -20,8 +20,32 @@
     }
   </style>
 
-</head>
+  <script>
+    $(document).ready(function() {
+      // Function to filter the table based on the selected level
+      function filterTable(level) {
+        $('table tbody tr').each(function() {
+          var groupLevel = $(this).find('td:nth-child(2)').text();
+          if (level === 'all' || groupLevel === level) {
+            $(this).show();
+          } else {
+            $(this).hide();
+          }
+        });
+      }
 
+      // Event handler for level selection change
+      $('#level-select').change(function() {
+        var selectedLevel = $(this).val();
+        filterTable(selectedLevel);
+      });
+
+      // Show all rows initially
+      filterTable('all');
+    });
+  </script>
+</head>
+<br><br>
 <div class="container">
   <div class="row">
     <div class="col-xs-12">
@@ -31,6 +55,16 @@
         </div>
 
         <div class="table-container">
+          <div class="form-group">
+            <label for="level-select">Filter by Level:</label>
+            <select class="form-control" id="level-select">
+              <option value="all">All Levels</option>
+              <option value="L1">L1</option>
+              <option value="L2">L2</option>
+              <option value="L3">L3</option>
+            </select>
+          </div>
+
           <table class="table table-responsive table-hover table-striped table-bordered" id="dev-table">
             <thead>
               <tr>
