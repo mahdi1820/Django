@@ -33,28 +33,25 @@
           $('.group-row[data-group="' + selectedGroup + '"]').show();
         }
       });
-
-      $('#teacher-select').change(function() {
-        var selectedTeacher = $(this).val();
+  
+      $('#teacher-select, #day-select').change(function() {
+        var selectedTeacher = $('#teacher-select').val();
+        var selectedDay = $('#day-select').val();
         $('.teacher-row').hide();
-        if (selectedTeacher === 'all') {
+  
+        if (selectedTeacher === 'all' && selectedDay === 'all') {
           $('.teacher-row').show();
-        } else {
+        } else if (selectedTeacher === 'all') {
+          $('.teacher-row[data-day="' + selectedDay + '"]').show();
+        } else if (selectedDay === 'all') {
           $('.teacher-row[data-teacher="' + selectedTeacher + '"]').show();
-        }
-      });
-
-      $('#day-select').change(function() {
-        var selectedDay = $(this).val();
-        $('.day-row').hide();
-        if (selectedDay === 'all') {
-          $('.day-row').show();
         } else {
-          $('.day-row[data-day="' + selectedDay + '"]').show();
+          $('.teacher-row[data-teacher="' + selectedTeacher + '"][data-day="' + selectedDay + '"]').show();
         }
       });
     });
   </script>
+  
 </head>
 <br><br>
 <div class="container">
@@ -112,22 +109,23 @@
           </thead>
           <tbody>
             {% for activity in activities %}
-            <tr class="group-row teacher-row day-row" data-group="{{ activity.group }}" data-teacher="{{ activity.teacher.id }}" data-day="{{ activity.duration.name }}">
-              <td>{{ activity.module.name }} ({{ activity.module.codeM }})</td>
-              <td>{{ activity.duration }}</td>
-              <td>{{ activity.teacher.user.first_name }} {{ activity.teacher.user.last_name }}</td>
-              <td>{{ activity.group.name }} ({{ activity.group.level }})</td>
-              <td>{{ activity.classroom }}</td>
-              <td>
-                <a class="btn btn-primary btn-xs" href="{% url 'update-Activities' activity.id %}">
-                  <span class="glyphicon glyphicon-edit"></span>
-                </a>
-                <a class="btn btn-danger btn-xs" href="{% url 'delete-Activities-from-University' activity.id %}">
-                  <span class="glyphicon glyphicon-trash"></span>
-                </a>
-              </td>
-            </tr>
-            {% endfor %}
+              <tr class="group-row teacher-row" data-group="{{ activity.group }}" data-teacher="{{ activity.teacher.id }}" data-day="{{ activity.duration.name }}">
+                <td>{{ activity.module.name }} ({{ activity.module.codeM }})</td>
+                <td>{{ activity.duration }}</td>
+                <td>{{ activity.teacher.user.first_name }} {{ activity.teacher.user.last_name }}</td>
+                <td>{{ activity.group.name }} ({{ activity.group.level }})</td>
+                <td>{{ activity.classroom }}</td>
+                <td>
+                  <a class="btn btn-primary btn-xs" href="{% url 'update-Activities' activity.id %}">
+                    <span class="glyphicon glyphicon-edit"></span>
+                  </a>
+                  <a class="btn btn-danger btn-xs" href="{% url 'delete-Activities-from-University' activity.id %}">
+                    <span class="glyphicon glyphicon-trash"></span>
+                  </a>
+                </td>
+              </tr>
+              {% endfor %}
+
           </tbody>
         </table>
       </div>

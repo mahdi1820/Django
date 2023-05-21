@@ -8,6 +8,7 @@ from django.db.models import Sum
 from django.core.mail import send_mail
 from datetime import datetime
 from django.db import IntegrityError
+from django.db.models import Q
 
 from .forms import TeacherUserForm ,TeacherExtraForm,DurationForm,Activities
 # Create your views here.
@@ -747,8 +748,13 @@ def admin_teacher_view(request):
 @user_passes_test(is_teacher)
 def teacher_dashboard_view(request):
     teacherdata=models.TeacherExtra.objects.all().filter(status=True,user_id=request.user.id)
+    teacher = models.TeacherExtra.objects.get(user=request.user)
+    activity = models.Activities.objects.all().filter(teacher=teacher).count()
+    groups = teacher.groups.all().count()
     notice=models.Notice.objects.all()
     mydict={
+        'activity':activity,
+        'groups':groups,
         'mobile':teacherdata[0].mobile,
         'date': teacherdata[0].joindate,
         'notice':notice
@@ -759,15 +765,29 @@ def teacher_dashboard_view(request):
 @user_passes_test(is_teacher)
 def teacher_view_mygroup_view(request):
     teacher = models.TeacherExtra.objects.get(user=request.user)
-    groups = teacher.groups.all()
-    return render(request,'school/teacher_view_mygroup.html',{'groups':groups})
+    groups = teacher.groups.all().distinct()
+    return render(request, 'school/teacher_view_mygroup.html', {'groups': groups})
+
 
 @login_required(login_url="login")
 @user_passes_test(is_teacher)
 def teacher_view_myactivity_view(request):
     teacher = models.TeacherExtra.objects.get(user=request.user)
-    activity = models.Activities.objects.filter(teacher=teacher )
-    return render(request, 'school/teacher_view_myactivity.html',{'activity':activity})
+    activities = models.Activities.objects.filter(teacher=teacher)
+    groups = models.Group.objects.filter(activities__in=activities).distinct().values('id', 'name', 'level')
+    modules = models.Module.objects.filter(activities__in=activities).distinct().values_list('name', flat=True)
+
+    return render(request, 'school/teacher_view_myactivity.html', {
+        'activities': activities,
+        'groups': groups,
+        'modules': modules
+    })
+
+
+
+
+
+
 
 @login_required(login_url="login")
 @user_passes_test(is_teacher)
@@ -890,10 +910,14 @@ def student_attendance_view(request):
 def student_activity_view(request):
     student = models.StudentExtra.objects.get(user=request.user)
     group = student.cl
-    
     activities = models.Activities.objects.filter(group=group)
-    
     teachers = models.TeacherExtra.objects.filter(activities__in=activities).distinct()
-    modules = models.Module.objects.filter(activities__in=activities).distinct()
-    
-    return render(request, 'school/student-activity.html', {'activities': activities, 'teachers': teachers, 'modules': modules})
+    modules = models.Module.objects.filter(activities__in=activities).distinct().values_list('name', flat=True)
+    durations = models.Days.objects.all()
+
+    return render(request, 'school/student-activity.html', {
+        'activities': activities,
+        'teachers': teachers,
+        'modules': modules,
+        'durations': durations,
+    })

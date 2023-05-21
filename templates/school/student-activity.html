@@ -23,24 +23,26 @@
 
   <script type="text/javascript">
     $(document).ready(function() {
-      $('#teacher-select, #module-select').change(function() {
-        var selectedTeacher = $('#teacher-select').val();
-        var selectedModule = $('#module-select').val();
-
-        $('.activity-row').hide();
-
-        if (selectedTeacher === 'all' && selectedModule === 'all') {
-          $('.activity-row').show();
-        } else if (selectedTeacher === 'all') {
-          $('.activity-row[data-module="' + selectedModule + '"]').show();
-        } else if (selectedModule === 'all') {
-          $('.activity-row[data-teacher="' + selectedTeacher + '"]').show();
-        } else {
-          $('.activity-row[data-teacher="' + selectedTeacher + '"][data-module="' + selectedModule + '"]').show();
-        }
-      });
+        $('#teacher-select, #module-select, #day-select').change(function() {
+            var selectedTeacher = $('#teacher-select').val();
+            var selectedModule = $('#module-select').val();
+            var selectedDay = $('#day-select').val();
+    
+            $('.activity-row').hide();
+    
+            $('.activity-row').filter(function() {
+                var teacherMatch = selectedTeacher === 'all' || $(this).data('teacher') === selectedTeacher;
+                var moduleMatch = selectedModule === 'all' || $(this).data('module') === selectedModule;
+                var dayMatch = selectedDay === 'all' || $(this).data('day') === selectedDay;
+    
+                return teacherMatch && moduleMatch && dayMatch;
+            }).show();
+        });
     });
-  </script>
+    </script>
+    
+
+  
 </head>
 
 <div class="container">
@@ -51,7 +53,7 @@
           <h6 class="panel-title">Activity</h6>
         </div>
 
-        <div class="table-container">
+         <div class="table-container">
           <div class="form-group">
             <label for="teacher-select">Filter by Teacher:</label>
             <select class="form-control" id="teacher-select">
@@ -61,12 +63,24 @@
               {% endfor %}
             </select>
           </div>
+          
+
           <div class="form-group">
             <label for="module-select">Filter by Module:</label>
             <select class="form-control" id="module-select">
-              <option value="all">All Modules</option>
-              {% for module in modules %}
-                <option value="{{ module }}">{{ module }} ({{ module.codeM }})</option>
+                <option value="all">All Modules</option>
+                {% for module in modules %}
+                    <option value="{{ module }}">{{ module }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+          <div class="form-group">
+            <label class="filter-label" for="day-select">Filter by Day:</label>
+            <select class="form-control" id="day-select">
+              <option value="all">All Days</option>
+              {% for duration in durations %}
+              <option value="{{ duration.name }}">{{ duration.name }}</option>
               {% endfor %}
             </select>
           </div>
@@ -82,13 +96,14 @@
             </thead>
             <tbody>
               {% for activity in activities %}
-                <tr class="activity-row" data-teacher="{{ activity.teacher }}" data-module="{{ activity.module }}">
-                  <td>{{ activity.module }} ({{ activity.module.codeM }})</td>
-                  <td>{{ activity.duration }}</td>
-                  <td>{{ activity.teacher }}</td>
-                  <td>{{ activity.classroom }}</td>
-                </tr>
+              <tr class="activity-row" data-teacher="{{ activity.teacher }}" data-module="{{ activity.module }}" data-day="{{ activity.duration.name }}">
+                <td>{{ activity.module }} ({{ activity.module.codeM }})</td>
+                <td>{{ activity.duration }}</td>
+                <td>{{ activity.teacher }}</td>
+                <td>{{ activity.classroom }}</td>
+              </tr>
               {% endfor %}
+
             </tbody>
           </table>
         </div>

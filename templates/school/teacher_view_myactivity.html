@@ -49,51 +49,49 @@
         <div class="panel-heading">
           <h6 class="panel-title">Activity</h6>
         </div>
-        <div class="table-container">
-          <div class="form-group">
-            <label for="group-select">Filter by Group:</label>
-            <select class="form-control" id="group-select">
-              <option value="all">All Groups</option>
-              {% for activity in activity %}
-                <option value="{{ activity.group }}">{{ activity.group }} ({{ activity.group.level }}) </option>
-              {% endfor %}
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="module-select">Filter by Module:</label>
-            <select class="form-control" id="module-select">
+        <div class="form-group">
+          <label for="group-select">Filter by Group:</label>
+          <select class="form-control" id="group-select">
+            <option value="all">All Groups</option>
+            {% for group in groups %}
+            <option value="{{ group.id }}">{{ group.name }} ({{ group.level }})</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="module-select">Filter by Module:</label>
+          <select class="form-control" id="module-select">
               <option value="all">All Modules</option>
-              {% for activity in activity %}
-                <option value="{{ activity.module }}">{{ activity.module }} ({{ activity.module.codeM }})</option>
+              {% for module in modules %}
+                  <option value="{{ module }}">{{ module }}</option>
               {% endfor %}
-            </select>
-          </div>
-          <div class="table-responsive">
-            <table class="table table-hover table-striped table-bordered" id="dev-table">
-              <thead>
-                <tr>
-                  <th>Module</th>
-                  <th>Group</th>
-                  <th>Duration</th>
-                  <th>Classroom</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for act in activity %}
-                  <tr class="activity-row" data-group="{{ act.group }}" data-module="{{ act.module }}">
-                    <td>{{ act.module }} ({{ act.module.codeM }})</td>
-                    <td>{{ act.group }} ({{ act.group.level }})</td>
-                    <td>{{ act.duration }}</td>
-                    <td>{{ act.classroom }}</td>
-                  </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
+          </select>
+      </div>
+
+        <div class="table-responsive">
+          <table class="table table-hover table-striped table-bordered" id="dev-table">
+            <thead>
+              <tr>
+                <th>Module</th>
+                <th>Group</th>
+                <th>Duration</th>
+                <th>Classroom</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for activity in activities %}
+              <tr class="activity-row" data-group="{{ activity.group.id }}" data-module="{{ activity.module.name }}">
+                <td>{{ activity.module.name }} ({{ activity.module.codeM }})</td>
+                <td>{{ activity.group.name }} ({{ activity.group.level }})</td>
+                <td>{{ activity.duration }}</td>
+                <td>{{ activity.classroom }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
   </div>
 </div>
-
 {% endblock content %}

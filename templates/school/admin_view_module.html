@@ -22,43 +22,32 @@
 
   <script>
     $(document).ready(function() {
-      // Function to update the table based on the selected filters
-      function updateTable() {
-        var selectedTeacher = $('#teacher-select').val();
-        var selectedGroup = $('#group-select').val();
-        var selectedDay = $('#day-select').val();
-  
-        $.ajax({
-          url: "{% url 'admin-view-ََActivities' %}",
-          type: "GET",
-          data: {
-            teacher: selectedTeacher,
-            group: selectedGroup,
-            day: selectedDay
-          },
-          success: function(data) {
-            $('#dev-table tbody').html(data);
-          },
-          error: function(xhr, textStatus, errorThrown) {
-            console.error("Error updating table:", errorThrown);
-          }
+      // Function to filter the table based on the selected level and codeM
+      function filterTable(level, codeM) {
+        $('table tbody tr').each(function() {
+          var moduleLevel = $(this).find('td:nth-child(3)').text();
+          var moduleCodeM = $(this).find('td:nth-child(2)').text();
+          var showRow = (level === 'all' || moduleLevel === level) && (codeM === 'all' || moduleCodeM === codeM);
+          $(this).toggle(showRow);
         });
       }
-  
-      // Event handler for teacher selection change
-      $('#teacher-select').change(function() {
-        updateTable();
+
+      // Event handler for level selection change
+      $('#level-select').change(function() {
+        var selectedLevel = $(this).val();
+        var selectedCodeM = $('#codeM-select').val();
+        filterTable(selectedLevel, selectedCodeM);
       });
-  
-      // Event handler for group selection change
-      $('#group-select').change(function() {
-        updateTable();
+
+      // Event handler for codeM selection change
+      $('#codeM-select').change(function() {
+        var selectedCodeM = $(this).val();
+        var selectedLevel = $('#level-select').val();
+        filterTable(selectedLevel, selectedCodeM);
       });
-  
-      // Event handler for day selection change
-      $('#day-select').change(function() {
-        updateTable();
-      });
+
+      // Show all rows initially
+      filterTable('all', 'all');
     });
   </script>
   
