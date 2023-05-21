@@ -39,20 +39,22 @@
               </tr>
             </thead>
             <tbody>
-              {% for d in days %}
-              <tr>
-                <td>{{ d.name }}</td>
-                <td>
-                  <a class="btn btn-primary btn-xs" href="{% url 'update-days' d.id %}">
-                    <span class="glyphicon glyphicon-edit"></span>
-                  </a>
-                  <a class="btn btn-danger btn-xs" href="{% url 'delete-days-from-University' d.id %}">
-                    <span class="glyphicon glyphicon-trash"></span>
-                  </a>
-                </td>
-              </tr>
-              {% endfor %}
+              {% for day in days %}
+    <tr>
+        <td>{{ day.name }}</td>
+        <td>
+            <a class="btn btn-primary btn-xs" href="{% url 'update-days' day.id %}">
+                <span class="glyphicon glyphicon-edit"></span>
+            </a>
+            <a class="btn btn-danger btn-xs" href="{% url 'delete-days-from-University' day.id %}">
+                <span class="glyphicon glyphicon-trash"></span>
+            </a>
+        </td>
+    </tr>
+{% endfor %}
+
             </tbody>
+            
           </table>
         </div>
       </div>

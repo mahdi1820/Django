@@ -114,11 +114,14 @@ class room(models.Model):
 
 
 class Days(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=100)
+    order = models.IntegerField(null=True)
 
     def __str__(self):
         return self.name
-
+        
+    class Meta:
+        ordering = ['order']
 
 class Duration(models.Model):
     name = models.ForeignKey(Days, on_delete=models.CASCADE)
@@ -145,7 +148,9 @@ class Activities(models.Model):
     
     def __str__(self):
         return f"{self.module} {self.duration} {self.classroom} {self.teacher.user.first_name} {self.teacher.user.last_name} {self.group}"
-
+    
+    class Meta:
+        ordering = ['duration']
 class Attendance(models.Model):
     cl = models.ForeignKey(Group, on_delete=models.CASCADE)
     date = models.DateField()

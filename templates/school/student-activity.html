@@ -75,9 +75,8 @@
             <thead>
               <tr>
                 <th>Module</th>
-                <th>Teacher</th>
-                <th>Group</th>
                 <th>Duration</th>
+                <th>Teacher</th>
                 <th>Classroom</th>
               </tr>
             </thead>
@@ -85,9 +84,8 @@
               {% for activity in activities %}
                 <tr class="activity-row" data-teacher="{{ activity.teacher }}" data-module="{{ activity.module }}">
                   <td>{{ activity.module }} ({{ activity.module.codeM }})</td>
-                  <td>{{ activity.teacher }}</td>
-                  <td>{{ activity.group }} ({{ activity.group.level }})</td>
                   <td>{{ activity.duration }}</td>
+                  <td>{{ activity.teacher }}</td>
                   <td>{{ activity.classroom }}</td>
                 </tr>
               {% endfor %}

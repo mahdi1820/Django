@@ -68,7 +68,7 @@ class Rooms(forms.ModelForm):
 class Days(forms.ModelForm):
     class Meta:
         model=models.Days
-        fields=['name']
+        fields=['name','order']
 
 class Modules(forms.ModelForm):
     class Meta:

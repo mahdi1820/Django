@@ -43,20 +43,20 @@
             <th>Present/Absent</th>
           </tr>
         </thead>
-        {% if mylist %}
-          {% for activity, attendance in mylist %}
-            <tr>
-              <td>{{ student.cl }} ({{ activity.group.level }})</td>
-              <td>{{ activity.module }} ({{ activity.module.codeM }})</td>
-              <td>{{ attendance.get_duration }}</td>
-              <td>{{ attendance.present_status }}</td>
-            </tr>
-          {% endfor %}
-        {% else %}
-          <tr>
-            <td colspan="4">No attendance found for the selected date</td>
-          </tr>
-        {% endif %}
+        {% if attendance_data %}
+  {% for attendance in attendance_data %}
+    <tr>
+      <td>{{ attendance.cl }} ({{ attendance.activity.group.level }})</td>
+      <td>{{ attendance.activity.module }} ({{ attendance.activity.module.codeM }})</td>
+      <td>{{ attendance.activity.duration.name}} ({{ attendance.activity.duration.start_time}}-{{ attendance.activity.duration.end_time}})</td>
+      <td>{{ attendance.present_status }}</td>
+    </tr>
+  {% endfor %}
+{% else %}
+  <tr>
+    <td colspan="4">No attendance found for the selected date</td>
+  </tr>
+{% endif %}
       </table>
     </div>
   </div>

@@ -8,6 +8,7 @@ from django.db.models import Sum
 from django.core.mail import send_mail
 from datetime import datetime
 from django.db import IntegrityError
+
 from .forms import TeacherUserForm ,TeacherExtraForm,DurationForm,Activities
 # Create your views here.
 
@@ -340,7 +341,7 @@ def update_student_view(request,pk):
     if request.method=='POST':
         form1=forms.StudentUserForm(request.POST,instance=user)
         form2=forms.StudentExtraForm(request.POST,instance=student)
-        print(form1)
+        
         if form1.is_valid() and form2.is_valid():
             user=form1.save()
             user.set_password(user.password)
@@ -545,8 +546,10 @@ def admin_add_day_view(request):
 @login_required(login_url="login")
 @user_passes_test(is_admin)
 def admin_view_day_view(request):
-    days = models.Days.objects.all()
-    return render(request,'school/admin_view_days.html',{'days':days})
+    days = models.Days.objects.order_by('order')
+    return render(request, 'school/admin_view_days.html', {'days': days})
+
+
 
 @login_required(login_url="login")
 @user_passes_test(is_admin)
@@ -679,13 +682,18 @@ def admin_add_Activities_view(request):
 @login_required(login_url="login")
 @user_passes_test(is_admin)
 def admin_view_Activities_view(request):
-    Activities = models.Activities.objects.all()
+    activities = models.Activities.objects.all()
+    teachers = models.TeacherExtra.objects.all()  # Retrieve id and name only
+    durations = models.Days.objects.all()
     groups = models.Group.objects.all()
+
     context = {
-        'Activities': Activities,
+        'activities': activities,
+        'teachers': teachers,
+        'durations': durations,
         'groups': groups,
     }
-    return render(request,'school/admin_view_Activities.html',context)
+    return render(request, 'school/admin_view_Activities.html', context)
 
 @login_required(login_url="login")
 @user_passes_test(is_admin)
@@ -874,11 +882,7 @@ def student_attendance_view(request):
             student = models.StudentExtra.objects.filter(user=request.user).first()
             if student is not None:
                 attendance_data = models.Attendance.objects.filter(date=date, student=student)
-                mylist = []
-                for activity in models.Activities.objects.filter(group=student.cl):
-                    attendance_status = attendance_data.filter(activity=activity).first()
-                    mylist.append((activity, attendance_status))
-                return render(request, 'school/student_view_attendance_page.html', {'mylist': mylist, 'date': date, 'student': student})
+                return render(request, 'school/student_view_attendance_page.html', {'attendance_data': attendance_data, 'date': date, 'student': student})
     return render(request, 'school/student_view_attendance_ask_date.html', {'form': form})
 
 @login_required(login_url="login")
