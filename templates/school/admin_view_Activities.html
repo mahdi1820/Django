@@ -81,7 +81,9 @@
             <select class="form-control" id="teacher-select">
               <option value="all">All Teachers</option>
               {% for teacher in teachers %}
-              <option value="{{ teacher.id }}">{{ teacher.user.first_name }} {{ teacher.user.last_name }}</option>
+                {% if teacher.activities_set.exists %}  <!-- Check if the teacher has associated activities -->
+                  <option value="{{ teacher.id }}">{{ teacher.user.first_name }} {{ teacher.user.last_name }}</option>
+                {% endif %}
               {% endfor %}
             </select>
           </div>
