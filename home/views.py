@@ -9,7 +9,6 @@ from django.core.mail import send_mail
 from datetime import datetime
 from django.db import IntegrityError
 from django.db.models import Q
-
 from .forms import TeacherUserForm ,TeacherExtraForm,DurationForm,Activities
 # Create your views here.
 
@@ -371,18 +370,23 @@ def admin_take_attendance_view(request, lv):
     group = models.Group.objects.get(name=lv)
     students = models.StudentExtra.objects.filter(cl=group)
     activities = models.Activities.objects.filter(group=group).select_related('module', 'duration')
-    
+
     if request.method == 'POST':
         date = request.POST.get('date')
         attendance_data = []
-        
+        error_messages = []
+
         for student in students:
             activity_id = request.POST.get(f'activity_{student.id}')
             present_status = request.POST.get(f'attendance_{student.id}', 'absent')
-            
+
             # Retrieve the activity object for the current student
             activity = activities.get(id=activity_id)
-            
+
+            # Check if attendance already exists for this student, activity, and date
+            if models.Attendance.objects.filter(student=student, activity=activity, date=date).exists():
+                error_messages.append(f'Attendance already marked for {student.get_name} for this activity on the selected date.')
+
             attendance_data.append(models.Attendance(
                 cl=group,
                 date=date,
@@ -390,16 +394,22 @@ def admin_take_attendance_view(request, lv):
                 student=student,
                 activity=activity,
             ))
-        
+
+        if error_messages:
+            for error in error_messages:
+                messages.error(request, error)
+            return redirect('admin-take-attendance', lv=lv)
+
         models.Attendance.objects.bulk_create(attendance_data)
-        return redirect('admin-attendance')
-    
+        messages.success(request, 'Attendance recorded successfully.')
+        return redirect('admin-take-attendance', lv=lv)
+
     context = {
         'students': students,
         'group': group,
         'activities': activities,
     }
-    
+
     return render(request, 'school/admin_take_attendance.html', context)
 
 
@@ -805,16 +815,21 @@ def teacher_take_attendance_view(request, lv):
     students = models.StudentExtra.objects.filter(cl=group)
     activities = models.Activities.objects.filter(group=group, teacher=teacher).select_related('module', 'duration')
 
-
     if request.method == 'POST':
         date = request.POST.get('date')
         attendance_data = []
+        error_messages = []
 
         for student in students:
             activity_id = request.POST.get(f'activity_{student.id}')
-            present_status = request.POST.get(f'student_{student.id}', 'absent')
+            present_status = request.POST.get(f'attendance_{student.id}', 'absent')
 
+            # Retrieve the activity object for the current student
             activity = activities.get(id=activity_id)
+
+            # Check if attendance already exists for this student, activity, and date
+            if models.Attendance.objects.filter(student=student, activity=activity, date=date).exists():
+                error_messages.append(f'Attendance already marked for {student.get_name} for this activity on the selected date.')
 
             attendance_data.append(models.Attendance(
                 cl=group,
@@ -824,15 +839,23 @@ def teacher_take_attendance_view(request, lv):
                 activity=activity,
             ))
 
+        if error_messages:
+            for error in error_messages:
+                messages.error(request, error)
+            return redirect('teacher-take-attendance', lv=lv)
+
         models.Attendance.objects.bulk_create(attendance_data)
-        return redirect('teacher-attendance')
+        messages.success(request, 'Attendance recorded successfully.')
+        return redirect('teacher-take-attendance', lv=lv)
 
     context = {
         'students': students,
         'group': group,
         'activities': activities,
     }
+
     return render(request, 'school/teacher_take_attendance.html', context)
+
 
 @login_required(login_url="login")
 @user_passes_test(is_teacher)

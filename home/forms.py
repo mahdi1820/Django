@@ -188,14 +188,23 @@ class AttendanceForm(forms.Form):
     def clean(self):
         cleaned_data = super().clean()
         activity = cleaned_data.get('activity')
-        if activity:
+        date = cleaned_data.get('date')
+
+        if activity and date:
             # Check if attendance has already been marked for this activity on the selected date
-            if models.Attendance.objects.filter(activity=activity, date=cleaned_data['date']).exists():
+            if models.Attendance.objects.filter(activity=activity, date=date).exists():
                 msg = 'Attendance has already been marked for this activity on the selected date.'
                 self.add_error('date', msg)
                 self.add_error('activity', msg)
 
+            # Check if attendance has already been marked for any student for this activity on the selected date
+            if models.Attendance.objects.filter(activity=activity, date=date, student__in=models.StudentExtra.objects.filter(cl=cleaned_data['group'])).exists():
+                msg = 'Attendance has already been marked for a student for this activity on the selected date.'
+                self.add_error('date', msg)
+                self.add_error('activity', msg)
+
         return cleaned_data
+
 
 
 #for notice related form

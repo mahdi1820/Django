@@ -23,13 +23,61 @@
     .btnSubmit {
       text-align: center;
     }
+
+    /* Styling for error and success messages */
+    .messages-container {
+      max-height: 200px;
+      overflow-y: auto;
+      margin-bottom: 10px;
+    }
+
+    .alert {
+      color: white;
+      border: 1px solid;
+      padding: 10px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .alert-error {
+      background-color: #f44336;
+      border-color: #d32f2f;
+    }
+
+    .alert-success {
+      background-color: #4caf50;
+      border-color: #388e3c;
+    }
+    
+    /* Styling for attendance table */
+    .attendance-table {
+      margin-top: 30px;
+    }
   </style>
 </head>
 
 <form method="post">
   {% csrf_token %}
   <div class="container">
-    <div class="row">
+    <br>
+    <div class="messages-container">
+      {% if messages %}
+        {% for message in messages %}
+          {% if message.tags %}
+            {% if 'error' in message.tags %}
+              <div class="alert alert-error">
+                {{ message }}
+              </div>
+            {% elif 'success' in message.tags %}
+              <div class="alert alert-success">
+                {{ message }}
+              </div>
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+    </div>
+    <div class="row attendance-table">
       <div class="panel panel-primary">
         <div class="panel-heading">
           <h6 class="panel-title">Attendance</h6>
@@ -45,33 +93,32 @@
             </thead>
             <tbody>
               {% for student in students %}
-                  <tr>
-                      <td>{{ student.get_name }}</td>
-                      <td>
-                        <select name="activity_{{ student.id }}">
-                            {% for activity in activities %}
-                                <option value="{{ activity.id }}">{{ activity.module.name }} ({{ activity.module.codeM }}) - {{ activity.duration.name }} [{{ activity.duration.start_time }} - {{ activity.duration.end_time }}]</option>
-                            {% endfor %}
-                        </select>
-                      </td>
-                      <td>
-                          <select name="student_{{ student.id }}">
-                              <option value="present">Present</option>
-                              <option value="absent">Absent</option>
-                          </select>
-                      </td>
-                  </tr>
+                <tr>
+                  <td>{{ student.get_name }}</td>
+                  <td>
+                    <select name="activity_{{ student.id }}">
+                      {% for activity in activities %}
+                        <option value="{{ activity.id }}">{{ activity.module.name }} ({{ activity.module.codeM }}) - {{ activity.duration.name }} [{{ activity.duration.start_time }} - {{ activity.duration.end_time }}]</option>
+                      {% endfor %}
+                    </select>
+                  </td>
+                  <td>
+                    <select name="attendance_{{ student.id }}">
+                      <option value="present">Present</option>
+                      <option value="absent">Absent</option>
+                    </select>
+                  </td>
+                </tr>
               {% endfor %}
             </tbody>
           </table>
         </div>
         <input type="date" name="date" class="form-control" placeholder="Enter Date dd/mm/yyyy">
         <div class="btnSubmit">
-          <input type="submit" style="margin-top: 10px; margin-bottom: 10px; margin-right: 750px;" name="submit" class="btn btn-success" value="Submit Attendance">
+          <input type="submit" style="margin-top: 10px; margin-bottom: 10px; margin-right: 700px;" name="submit" class="btn btn-success" value="Submit Attendance" formaction="{% url 'teacher-take-attendance' lv=group.name %}">
         </div>
       </div>
     </div>
   </div>
 </form>
-
 {% endblock content %}
